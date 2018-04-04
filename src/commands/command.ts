@@ -9,6 +9,7 @@ export interface Options {
 }
 
 export default abstract class AppCommand extends Base {
+  static hidden = true
   static description = 'add a command to an existing CLI or plugin'
 
   static flags = {

@@ -7,11 +7,11 @@ export default abstract class CommandBase extends Command {
 
     env.register(
       require.resolve(`./generators/${type}`),
-      `oclif:${type}`
+      `sfdx:${type}`
     )
 
     await new Promise((resolve, reject) => {
-      env.run(`oclif:${type}`, generatorOptions, (err: Error, results: any) => {
+      env.run(`sfdx:${type}`, generatorOptions, (err: Error, results: any) => {
         if (err) reject(err)
         else resolve(results)
       })

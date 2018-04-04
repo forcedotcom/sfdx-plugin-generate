@@ -1,261 +1,242 @@
-
-<img src="https://user-images.githubusercontent.com/449385/38243295-e0a47d58-372e-11e8-9bc0-8c02a6f4d2ac.png" width="260" height="73">  
-
-
-oclif: Node.JS Open CLI Framework
-=================================
-
-[![Join the chat at https://gitter.im/oclif/oclif](https://badges.gitter.im/oclif/oclif.svg)](https://gitter.im/oclif/oclif?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Version](https://img.shields.io/npm/v/oclif.svg)](https://npmjs.org/package/oclif)
-[![CircleCI](https://circleci.com/gh/oclif/oclif/tree/master.svg?style=shield)](https://circleci.com/gh/oclif/oclif/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/oclif/oclif?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/oclif/branch/master)
-[![Greenkeeper](https://badges.greenkeeper.io/oclif/oclif.svg)](https://greenkeeper.io/)
-[![Known Vulnerabilities](https://snyk.io/test/github/oclif/oclif/badge.svg)](https://snyk.io/test/github/oclif/oclif)
-[![Downloads/week](https://img.shields.io/npm/dw/oclif.svg)](https://npmjs.org/package/oclif)
-[![License](https://img.shields.io/npm/l/oclif.svg)](https://github.com/oclif/oclif/blob/master/package.json)
-
+Salesforce Plugin Generator (Beta)
+==================
 <!-- toc -->
-* [🗒 Description](#-description)
-* [🚀 Getting Started Tutorial](#-getting-started-tutorial)
-* [✨ Features](#-features)
-* [📌 Requirements](#-requirements)
-* [🌈 CLI Types](#-cli-types)
-* [🏗 Usage](#-usage)
-* [📚 Examples](#-examples)
-* [🔨 Commands](#-commands)
-* [🏭 Related Repositories](#-related-repositories)
-* [🦔 Learn More](#-learn-more)
-* [📣 Feedback](#-feedback)
+* [Description](#description)
+* [Usage](#usage)
+* [Salesforce CLI Plugin Development ](#salesforce-cli-plugin-development)
+* [Plugin Generator Development](#plugin-generator-development)
+* [Related Docs and Repositories](#related-docs-and-repositories)
 <!-- tocstop -->
 
-# 🗒 Description
+# Description
 
-This is a framework for building CLIs in Node.js. This framework was built out of the [Heroku CLI](https://cli.heroku.com) but generalized to build any custom CLI. It's designed both for simple CLIs that can be just a single file with a few flag options, or for very complex CLIs that have subcommands (like git or heroku).
+This is the generator plugin for building plugins for the Salesforce CLI. The generated sfdx plugin and command are built on top of the [oclif cli framework](https://github.com/oclif/oclif).
+____
+**As a beta feature, Salesforce Plugin Generator is a preview and isn’t part of the “Services” under your master subscription agreement with Salesforce. Use this feature at your sole discretion, and make your purchase decisions only on the basis of generally available products and features. Salesforce doesn’t guarantee general availability of this feature within any particular time frame or at all, and we can discontinue it at any time. This feature is for evaluation purposes only, not for production use. It’s offered as is and isn’t supported, and Salesforce has no liability for any harm or damage arising out of or in connection with it. All restrictions, Salesforce reservation of rights, obligations concerning the Services, and terms for related Non-Salesforce Applications and Content apply equally to your use of this feature. You can provide feedback and suggestions for Salesforce Plugin Generator in the [issues](TODO:replace-with-link-to-github-issues) section of this repo.**
+____
+# Usage
 
-[See the docs for more information](http://oclif.io/docs/introduction.html).
-
-# 🚀 Getting Started Tutorial
-
-The [Getting Started tutorial](http://oclif.io/docs/introduction.html) is a step-by-step guide to introduce you to oclif. If you have not developed anything in a command line before, this tutorial is a great place to get started.
-
-# ✨ Features
-
-* **Flag/Argument parsing** - No CLI framework would be complete without a flag parser. We've built a custom one from years of experimentation that we feel consistently handles user input flexible enough for the user to be able to easily use the CLI in ways they expect, but without comprisiming strictness guarantees to the developer.
-* **Super Speed** - The overhead for running an oclif CLI command is almost nothing. [It requires very few dependencies](https://www.npmjs.com/package/@oclif/command?activeTab=dependencies). Also, only the command to be executed will be required with node. So large CLIs with many commands will load just as fast as a small one with a single command.
-* **CLI Generator** - Run a single command to scaffold out a fully functional CLI and get started quickly. See [Usage](#-usage) below.
-* **Testing Helpers** - We've put a lot of work into making commands easily testable and easy to mock out stdout/stderr. The generator will automatically create [scaffolded tests](https://github.com/oclif/example-multi-ts/blob/master/test/commands/hello.test.ts).
-* **Auto-documentation** - By default you can pass `--help` to the CLI to get help such as flag options and argument information. This information is also automatically placed in the README whenever the npm package of the CLI is published. See the [multi-command CLI example](https://github.com/oclif/example-multi-ts)
-* **Plugins** - Using [plugins](https://oclif.io/docs/plugins.html), users of the CLI can extend it with new functionality, a CLI can be split into modular components, and functionality can be shared amongst multiple CLIs. See [Building your own plugin](https://oclif.io/docs/plugins.html#building-your-own-plugin).
-* **Hooks** - Use lifecycle hooks to run functionality any time a CLI starts, or on custom triggers. Use this whenever custom functionality needs to be shared between various components of the CLI.
-* **TypeScript (or not)** - Everything in the core of oclif is written in TypeScript and the generator can build fully configured TypeScript CLIs or just plain JavaScript CLIs. By virtue of static properties in TypeScript the syntax is a bit cleaner in TypeScript—but everything will work no matter which language you choose. If you use plugins support, the CLI will automatically use `ts-node` to run the plugins making it easy and fast to use TypeScript with minimal-to-no boilerplate needed for any oclif CLI.
-* **Everything is Customizable** - Pretty much anything can be swapped out and replaced inside oclif if needed—including the arg/flag parser.
-* **Coming soon: man pages** - In addition to in-CLI help through `--help` and the README markdown help generation, the CLI can also automatically create man pages for all of its commands.
-* **Coming soon: Autocomplete** - Automatically include autocomplete for your CLI. This includes not just command names and flag names, but flag values as well. For example, it's easy to configure the Heroku CLI to have completions for Heroku app names:
-
-```
-$ heroku info --app=<tab><tab> # will complete with all the Heroku apps a user has in their account
+## Check Your Salesforce CLI Version
+Starting with Salesforce CLI version 6.7.1, the plugin generator is offered as a core plugin and can be used out of the box. To check your Salesforce CLI version:
+```sh-session
+$ sfdx --version
 ```
 
-# 📌 Requirements
+## Generate a Salesforce CLI Plugin
+Create and configure your own plugin for the Salesforce CLI. 
 
-Only Node 8+ is supported. Node 6 will reach end-of-life April 2019. At that point we will continue to support the current LTS version of node. You can add the [node](https://www.npmjs.com/package/node) package to your CLI to ensure users are on Node 8.
+1. **Run `sfdx plugins:generate yourPluginName`.**  
 
-# 🌈 CLI Types
+    Unless you include the `--defaults` flag, you are prompted for information that's used to populate your new plugin. Answer the questions, or press Enter to use the default values. 
+    ```sh-session
+    $ sfdx plugins:generate yourPluginName
+    ? npm package name (yourPluginName)
+    ...
+    Created yourPluginName in $HOME/<path-to-current-working-directory>/yourPluginName:
+    ```
 
-With oclif you can create 2 different CLI types, single and multi.
+    The generator scaffolds a new sfdx plugin and installs the plugin's npm package dependencies.  
 
-Single CLIs are like `ls` or `cat`. They can accept arguments and flags. Single CLIs can [optionally be just be a single file](https://github.com/oclif/command).
+2. **Change directories into the newly created plugin directory.**
+    ```sh-session
+    $ cd yourPluginName
+    ```
+    The new plugin contains an example `hello:org` command. You can find the code for that command at `yourPluginName/src/commands/hello/org.ts`.  
 
-Multi CLIs are like `git` or `heroku`. They have subcommands that are themselves single CLIs. In the `package.json` there is a field `oclif.commands` that points to a directory. This directory contains all the subcommands for the CLI. For example, if you had a CLI called `mycli` with the commands `mycli create` and `mycli destroy`, you would have a project like the following:
+3. **Run your `hello:org` command.**  
 
+    This can be done in one of two ways:  
+      * Link your new plugin to the Salesforce CLI. This installs the plugin in the Salesforce CLI by creating a symlink to the `yourPluginName` directory.
+        ```sh-shell
+        $ sfdx plugins:link
+        ```
+        With the plugin linked, you can see command details by adding the `-h` | `--help` flag.
+        ```sh-session
+        $ sfdx hello:org --help 
+        USAGE
+          $ sfdx hello:org [FILE]
+
+        OPTIONS
+          -f, --force
+          -n, --name=name                                  name to print
+          -u, --targetusername=targetusername              username or alias for the target org; overrides default target org
+          -v, --targetdevhubusername=targetdevhubusername  username or alias for the dev hub org; overrides default dev hub org
+          --apiversion=apiversion                          override the api version used for api requests made by this command
+          --json                                           format output as json
+          --loglevel=(trace|debug|info|warn|error|fatal)   logging level for this command invocation
+
+        EXAMPLES
+          $ sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
+            Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
+            My hub org id is: 00Dxx000000001234
+
+          $ sfdx hello:org --name myname --targetusername myOrg@example.com
+            Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
+        ```
+      
+      * Alternatively, you can run the `hello:org` command without linking it to the Salesforce CLI by using the provided `bin/run` script.
+        ```sh-session
+        $ bin/run hello:org --help
+        USAGE
+          $ sfdx hello:org [FILE]
+
+        OPTIONS
+          -f, --force
+          -n, --name=name                                  name to print
+          -u, --targetusername=targetusername              username or alias for the target org; overrides default target org
+          -v, --targetdevhubusername=targetdevhubusername  username or alias for the dev hub org; overrides default dev hub org
+          --apiversion=apiversion                          override the api version used for api requests made by this command
+          --json                                           format output as json
+          --loglevel=(trace|debug|info|warn|error|fatal)   logging level for this command invocation
+
+        EXAMPLES
+          $ sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
+            Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
+            My hub org id is: 00Dxx000000001234
+
+          $ sfdx hello:org --name myname --targetusername myOrg@example.com
+            Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
+        ```
+
+Now you are ready to develop your own commands! 
+
+
+# Salesforce CLI Plugin Development 
+The generated `hello:org` command extends [sfdx-command](TODO:add-link), which in turn extends [oclif/command](https://github.com/oclif/command). When you build your own commands, you extend `sfdx-command` too. 
+  
+`sfdx-command` comes packed with functionality to speed up your command development and interact more easily with Salesforce DX projects and Salesforce orgs. `sfdx-command` uses features of [sfdx-core](TODO:add-link), which exposes Salesforce API functionality that's useful in command development. See these libraries' documentation pages for a full list of features. 
+  
+## Features
+The `hello:org` command highlights a small subset of the features available through [sfdx-command](TODO:add-link), [sfdx-core](TODO:add-link), and [oclif](https://github.com/oclif/command). You can find the code for the `hello:org` command at `yourPluginName/src/commands/hello/org.ts`.
+
+### Command Parameters
+Add standard and custom parameters to your commands.
+
+#### Automatic Parameter Generation
+`sfdx-command` automatically enables the `--json` and `--loglevel` flags on every command to make continuous integration setup and debugging easier. 
+
+#### Optional Parameter Generation
+
+`sfdx-command` also includes functionality to help you set up connections with Salesforce orgs. For example, to enable the `--targetusername` parameter for your command:
+```js
+protected static requiresUsername = true;
+```
+
+Now, the command can access the org that has a specified target username.
+```js
+public async run(): Promise<any> {
+  const org = this.org;
+}
+```
+
+[TODO: link to sfdx-command flag docs]().
+
+#### Custom Parameters
+In addition to the `sfdx-command` parameters, you can specify your own custom parameters by setting the `flagsConfig` variable.
+
+```js
+protected static flagsConfig = {
+    // flag with a value (-n, --name=VALUE)
+    name: flags.string({char: 'n', description: messages.getMessage('nameFlagDescription')}),
+    force: flags.boolean({char: 'f'})
+};
+```
+[TODO: link to custom flag configuration documentation]().
+
+### Message Loading
+The [sfdx-core](TODO: add link to sfdx-core messaging docs) APIs provide a framework for handling command messaging.
+```js
+core.Messages.importMessagesDirectory(pathToPluginRootDirectory);
+const messages = core.Messages.loadMessages('yourPluginName', 'org');
+```
+
+### Topics 
+As you add more commands to your CLI plugin, it can also be useful to nest your commands within topics. In the case of the generated plugin, `hello` is the topic and `org` is the command name. This structure was created by placing the `org.ts` file in the `hello` subdirectory.
 ```
 package.json
 src/
 └── commands/
-    ├── create.ts
-    └── destroy.ts
+    └── hello/
+        └── org.ts
 ```
+See [oclif/oclif#-topics](https://github.com/oclif/oclif#-topics) for more information on how to structure your directories to utilize topics.
 
-Multi-command CLIs may also include [plugins](https://oclif.io/docs/plugins.html).
+## Important Note for Plugin Command Developers
+Because this is a TypeScript project, you need to compile the changes you make to your commands before running the commands. 
+* If you linked your plugin to the Salesforce CLI, to compile your code and update the `.oclif.manifest.json` file that is consumed by the Salesforce CLI, run:
+    ```sh-session
+    yarn run prepare
+    ```
 
-# 🏗 Usage
+* If you use the `bin/run` script to run your commands, to compile your changes, run: 
+    ```sh-session
+    yarn run build
+    ```
+  
+## Debugging your plugin:
+We recommend using the Visual Studio Code (VS Code) IDE for your plugin development. Included in the `.vscode` directory of the generated plugin is a `launch.json` config file, which allows you to attach a debugger to the node process when running your commands.
 
-Creating a single-command CLI:
+To debug the `hello:org` command from the `myNewPlugin` directory:
+1. Start the inspector
+  
+    * If you linked your plugin to the sfdx cli, call your command with the `dev-suspend` switch: 
+        ```sh-session
+        $ sfdx hello:org -u myOrg@example.com --dev-suspend
+        ```
+  
+    * Alternatively, to call your command using the `bin/run` script, set the `NODE_OPTIONS` environment variable to `--inspect-brk` when starting the debugger:
+        ```sh-session
+        $ NODE_OPTIONS=--inspect-brk bin/run hello:org -u myOrg@example.com
+        ```
 
-```sh-session
-$ npx oclif single mynewcli
-? npm package name (mynewcli): mynewcli
-$ cd mynewcli
-$ ./bin/run
-hello world from ./src/index.js!
-```
+2. Set some breakpoints in your command code
+3. Click on the Debug icon in the Activity Bar on the side of VS Code to open up the Debug view.
+4. In the upper left hand corner of VS Code, verify that the "Attach to Remote" launch configuration has been chosen.
+5. Hit the green play button to the left of the "Attach to Remote" launch configuration window. The debugger should now be suspended on the first line of the program. 
+6. Hit the green play button at the top middle of VS Code (this play button will be to the right of the play button that you clicked in step #5). 
+</br><img src=".images/vscodeScreenshot.png" width="480" height="278"></br>
+Congrats, you are now debugging!
+  
+# Plugin Generator Development
+To make changes to the plugin generator, follow these instructions.
+=======
+  
+Note: Only Node 8+ is supported. If you are new to Node.js, use nvm to install node.
+  
+1. Start by cloning the repo.
+    ```sh-session
+    $ git clone TODO:update-with-repo
+    ```
+2. Change directories into the cloned repo.
+    ```sh-session
+    $ cd TODO:update-with-repo-name
+    ```
+3. If you don't have Node.js version 8 or above installed, install it now.
+    ```sh-session
+    $ nvm install v8.9.4
+    ```
+4. Install the Yarn package manager.
+    ```sh-session
+    $ npm install -g yarn
+    ```
+5. Install the plugin generator.
+    ```sh-session
+    $ yarn install
+    ```
+6. Compile the TypeScript code.
+    ```sh-session
+    $ yarn run build
+    ```
+7. Now you are ready to run the plugins:generate command and make any changes to the generator.
+    ```sh-session
+    $ bin/run plugins:generate yourPluginName
+    ```
 
-Creating a multi-command CLI:
-
-```sh-session
-$ npx oclif multi mynewcli
-? npm package name (mynewcli): mynewcli
-$ cd mynewcli
-$ ./bin/run --version
-mynewcli/0.0.0 darwin-x64 node-v9.5.0
-$ ./bin/run --help
-USAGE
-  $ mynewcli [COMMAND]
-
-COMMANDS
-  hello
-  help   display help for mynewcli
-
-$ ./bin/run hello
-hello world from ./src/hello.js!
-```
-
-# 📚 Examples
-
-* TypeScript
-  * [Multi-command CLI](https://github.com/oclif/example-multi-ts)
-  * [Single-command CLI](https://github.com/oclif/example-single-ts)
-  * [Multi-command CLI Plugin](https://github.com/oclif/example-single-ts)
-* JavaScript
-  * [Multi-command CLI](https://github.com/oclif/example-multi-js)
-  * [Single-command CLI](https://github.com/oclif/example-single-js)
-  * [Multi-command CLI Plugin](https://github.com/oclif/example-plugin-js)
-
-# 🔨 Commands
-
-<!-- commands -->
-* [oclif command NAME](#oclif-command-name)
-* [oclif help [COMMAND]](#oclif-help-command)
-* [oclif hook NAME](#oclif-hook-name)
-* [oclif multi [PATH]](#oclif-multi-path)
-* [oclif plugin [PATH]](#oclif-plugin-path)
-* [oclif single [PATH]](#oclif-single-path)
-
-## oclif command NAME
-
-add a command to an existing CLI or plugin
-
-```
-USAGE
-  $ oclif command NAME
-
-ARGUMENTS
-  NAME  name of command
-
-OPTIONS
-  --defaults  use defaults for every setting
-  --force     overwrite existing files
-```
-
-_See code: [src/commands/command.ts](https://github.com/oclif/oclif/blob/v1.7.13/src/commands/command.ts)_
-
-## oclif help [COMMAND]
-
-display help for oclif
-
-```
-USAGE
-  $ oclif help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v1.2.1/src/commands/help.ts)_
-
-## oclif hook NAME
-
-add a hook to an existing CLI or plugin
-
-```
-USAGE
-  $ oclif hook NAME
-
-ARGUMENTS
-  NAME  name of hook (snake_case)
-
-OPTIONS
-  --defaults     use defaults for every setting
-  --event=event  [default: init] event to run hook on
-  --force        overwrite existing files
-```
-
-_See code: [src/commands/hook.ts](https://github.com/oclif/oclif/blob/v1.7.13/src/commands/hook.ts)_
-
-## oclif multi [PATH]
-
-generate a new multi-command CLI
-
-```
-USAGE
-  $ oclif multi [PATH]
-
-ARGUMENTS
-  PATH  path to project, defaults to current directory
-
-OPTIONS
-  --defaults         use defaults for every setting
-  --force            overwrite existing files
-  --options=options  (yarn|typescript|tslint|semantic-release|mocha)
-```
-
-_See code: [src/commands/multi.ts](https://github.com/oclif/oclif/blob/v1.7.13/src/commands/multi.ts)_
-
-## oclif plugin [PATH]
-
-create a new CLI plugin
-
-```
-USAGE
-  $ oclif plugin [PATH]
-
-ARGUMENTS
-  PATH  path to project, defaults to current directory
-
-OPTIONS
-  --defaults         use defaults for every setting
-  --force            overwrite existing files
-  --options=options  (yarn|typescript|tslint|semantic-release|mocha)
-```
-
-_See code: [src/commands/plugin.ts](https://github.com/oclif/oclif/blob/v1.7.13/src/commands/plugin.ts)_
-
-## oclif single [PATH]
-
-generate a new single-command CLI
-
-```
-USAGE
-  $ oclif single [PATH]
-
-ARGUMENTS
-  PATH  path to project, defaults to current directory
-
-OPTIONS
-  --defaults         use defaults for every setting
-  --force            overwrite existing files
-  --options=options  (yarn|typescript|tslint|semantic-release|mocha)
-```
-
-_See code: [src/commands/single.ts](https://github.com/oclif/oclif/blob/v1.7.13/src/commands/single.ts)_
-<!-- commandsstop -->
-
-# 🏭 Related Repositories
-
-* [@oclif/command](https://github.com/oclif/command) - Base command for oclif. This can be used directly without the generator.
-* [@oclif/config](https://github.com/oclif/config) - Most of the core setup for oclif lives here.
-* [@oclif/errors](https://github.com/oclif/errors) - Renders and logs errors from commands.
-* [@oclif/cli-ux](https://github.com/oclif/cli-ux) - Library for common CLI UI utilities.
-* [@oclif/test](https://github.com/oclif/test) - Test helper for oclif.
-
-# 🦔 Learn More
-
-* [Salesforce Release Announcement](https://engineering.salesforce.com/open-sourcing-oclif-the-cli-framework-that-powers-our-clis-21fbda99d33a)
-* [Heroku Release Announcement](https://blog.heroku.com/open-cli-framework)
-
-# 📣 Feedback
-
-If you have any suggestions or just want to let us know what you think of oclif, send us a message at <heroku-cli@salesforce.com>
+# Related Docs and Repositories
+* [salesforcedx/sfdx-command](TODO:add-link) - Base Salesforce CLI command
+* [salesforcedx/sfdx-core](TODO:add-link) - Helper API for working with a Salesforce DX project and managing Salesforce orgs 
+* [@oclif/command](https://github.com/oclif/command) - Base command for oclif; this can be used directly without the generator
+* [@oclif/config](https://github.com/oclif/config) - Most of the core setup for oclif lives here
+* [@oclif/errors](https://github.com/oclif/errors) - Renders and logs errors from commands
+* [@oclif/cli-ux](https://github.com/oclif/cli-ux) - Library for common CLI UI utilities
+* [@oclif/test](https://github.com/oclif/test) - Test helper for oclif

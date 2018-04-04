@@ -43,7 +43,7 @@ class App extends Generator {
     yarn: boolean
   }
   args!: {[k: string]: string}
-  type: 'single' | 'multi' | 'plugin' | 'base'
+  type: 'single' | 'multi' | 'plugin' | 'base' | 'sfdx-plugin'
   path: string
   pjson: any
   githubUser: string | undefined
@@ -101,6 +101,9 @@ class App extends Generator {
         break
       case 'multi':
         msg = 'Time to build a multi-command CLI with oclif!'
+        break
+      case 'sfdx-plugin':
+        msg = 'Time to build an sfdx-cli plugin!'
         break
       default:
         msg = `Time to build a oclif ${this.type}!`
@@ -223,6 +226,7 @@ class App extends Generator {
             {name: 'semantic-release (automated version management)', value: 'semantic-release', checked: this.options['semantic-release']}
           ],
           filter: ((arr: string[]) => _.keyBy(arr)) as any,
+          when: this.type !== 'sfdx-plugin'
         },
         // {
         //   type: 'string',
@@ -234,7 +238,8 @@ class App extends Generator {
       ]) as any
     }
     debug(this.answers)
-    this.options = this.answers.options
+    const sfdxPluginOptions = {typescript: true, mocha: true, 'semantic-release': false}
+    this.options = this.type === 'sfdx-plugin' ? sfdxPluginOptions : this.answers.options
     this.ts = this.options.typescript
     this.tslint = this.options.tslint
     this.yarn = this.options.yarn
@@ -268,15 +273,32 @@ class App extends Generator {
       this.pjson.scripts.build = 'rm -rf lib && tsc'
       this.pjson.scripts.prepublishOnly = `${npm} run build`
     }
-    if (['plugin', 'multi'].includes(this.type)) {
+    if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
       this.pjson.scripts.prepublishOnly = nps.series(this.pjson.scripts.prepublishOnly, 'oclif-dev manifest')
       if (this.semantic_release) this.pjson.scripts.prepublishOnly = nps.series(this.pjson.scripts.prepublishOnly, 'oclif-dev readme')
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
       this.pjson.scripts.clean = 'rm -f .oclif.manifest.json'
       this.pjson.scripts.postpublish = this.pjson.scripts.preversion = `${npm} run clean`
       this.pjson.files.push('.oclif.manifest.json')
+      if (this.type === 'sfdx-plugin') {
+        this.pjson.files.push('/messages')
+        this.pjson.scripts.prepare = this.pjson.scripts.prepublishOnly
+      }
     }
-    this.pjson.keywords = defaults.keywords || [this.type === 'plugin' ? 'oclif-plugin' : 'oclif']
+
+    let keywords
+    switch (this.type) {
+      case 'sfdx-plugin':
+        keywords = 'sfdx-plugin'
+        break
+      case 'plugin':
+        keywords = 'oclif-plugin'
+        break
+      default:
+        keywords = 'oclif'
+    }
+
+    this.pjson.keywords = defaults.keywords || [keywords]
     this.pjson.homepage = defaults.homepage || `https://github.com/${this.pjson.repository}`
     this.pjson.bugs = defaults.bugs || `https://github.com/${this.pjson.repository}/issues`
 
@@ -288,7 +310,7 @@ class App extends Generator {
     } else if (this.type === 'plugin') {
       this.pjson.oclif.bin = 'oclif-example'
     }
-    if (this.type !== 'plugin') {
+    if (this.type !== 'plugin' && this.type !== 'sfdx-plugin') {
       this.pjson.main = defaults.main || (this.ts ? 'lib/index.js' : 'src/index.js')
       if (this.ts) {
         this.pjson.types = defaults.types || 'lib/index.d.ts'
@@ -302,6 +324,7 @@ class App extends Generator {
     switch (this.type) {
       case 'multi':
       case 'plugin':
+      case 'sfdx-plugin':
         this.pjson.oclif = {
           commands: `./${this.ts ? 'lib' : 'src'}/commands`,
           // hooks: {init: `./${this.ts ? 'lib' : 'src'}/hooks/init`},
@@ -310,7 +333,7 @@ class App extends Generator {
         break
         default:
     }
-    if (this.type === 'plugin' && !this.pjson.oclif.devPlugins) {
+    if ((this.type === 'plugin' || this.type === 'sfdx-plugin') && !this.pjson.oclif.devPlugins) {
       this.pjson.oclif.devPlugins = [
         '@oclif/plugin-help',
       ]
@@ -331,7 +354,11 @@ class App extends Generator {
       }
       this.fs.copyTpl(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'), this)
       if (this.mocha) {
-        this.fs.copyTpl(this.templatePath('test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
+        if (this.type === 'sfdx-plugin') {
+          this.fs.copyTpl(this.templatePath('sfdxPlugin/test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
+        } else {
+          this.fs.copyTpl(this.templatePath('test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
+        }
       }
     }
     if (this.mocha && !this.fs.exists('test')) {
@@ -343,6 +370,7 @@ class App extends Generator {
     }
     if (_.isEmpty(this.pjson.oclif)) delete this.pjson.oclif
     this.pjson.files = _.uniq((this.pjson.files || []).sort())
+
     this.fs.writeJSON(this.destinationPath('./package.json'), sortPjson(this.pjson))
     this.fs.copyTpl(this.templatePath('editorconfig'), this.destinationPath('.editorconfig'), this)
     this.fs.copyTpl(this.templatePath('scripts/greenkeeper'), this.destinationPath('.circleci/greenkeeper'), this)
@@ -350,7 +378,7 @@ class App extends Generator {
     //   this.fs.copyTpl(this.templatePath('scripts/release'), this.destinationPath('.circleci/release'), this)
     // }
     // this.fs.copyTpl(this.templatePath('scripts/setup_git'), this.destinationPath('.circleci/setup_git'), this)
-    this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
+
     this.fs.copyTpl(this.templatePath('circle.yml.ejs'), this.destinationPath('.circleci/config.yml'), this)
     this.fs.copyTpl(this.templatePath('appveyor.yml.ejs'), this.destinationPath('appveyor.yml'), this)
     if (this.pjson.license === 'MIT' && (this.pjson.repository.startsWith('oclif') || this.pjson.repository.startsWith('heroku'))) {
@@ -362,9 +390,12 @@ class App extends Generator {
     this.fs.copyTpl(this.templatePath('gitattributes'), this.destinationPath('.gitattributes'), this)
 
     this.fs.write(this.destinationPath('.gitignore'), this._gitignore())
-    this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
-    const eslintignore = this._eslintignore()
-    if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
+    if (this.type !== 'sfdx-plugin') {
+      this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
+      this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
+      const eslintignore = this._eslintignore()
+      if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
+    }
 
     switch (this.type) {
       case 'single':
@@ -372,6 +403,9 @@ class App extends Generator {
         break
       case 'plugin':
         this._writePlugin()
+        break
+      case 'sfdx-plugin':
+        this._writeSfdxPlugin()
         break
       case 'multi':
         this._writeMulti()
@@ -402,6 +436,21 @@ class App extends Generator {
           '@oclif/dev-cli',
           '@oclif/plugin-help',
           'globby',
+        )
+        break
+      case 'sfdx-plugin':
+        dependencies.push(
+          '@oclif/command',
+          '@oclif/config',
+          '@oclif/errors',
+          '@salesforce/command',
+        )
+        devDependencies.push(
+          '@oclif/dev-cli',
+          '@oclif/plugin-help',
+          'globby',
+          '@salesforce/dev-config',
+          'sinon',
         )
         break
       case 'multi':
@@ -456,7 +505,7 @@ class App extends Generator {
       install(devDependencies, {...yarnOpts, ...dev, ignoreScripts: true}),
       install(dependencies, yarnOpts),
     ]).then(() => {
-      if (['plugin', 'multi'].includes(this.type)) {
+      if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
         this.spawnCommandSync(path.join('.', 'node_modules/.bin/oclif-dev'), ['readme'])
       }
       console.log(`\nCreated ${this.pjson.name} in ${this.destinationRoot()}`)
@@ -515,6 +564,39 @@ class App extends Generator {
     }
     if (this.mocha && !fs.existsSync('test')) {
       this.fs.copyTpl(this.templatePath(`test/command.test.${this._ext}.ejs`), this.destinationPath(`test/commands/hello.test.${this._ext}`), {...opts, name: 'hello'})
+    }
+  }
+
+  private _writeSfdxPlugin() {
+    const sfdxExampleCommand = 'org'
+    const topic = 'hello'
+    const bin = this._bin
+    const cmd = `${bin} ${sfdxExampleCommand}`
+    const opts = {...this as any, _, bin, cmd}
+    this.fs.copyTpl(this.templatePath('plugin/bin/run'), this.destinationPath('bin/run'), opts)
+    this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
+    this.fs.copyTpl(this.templatePath('sfdxPlugin/README.md.ejs'), this.destinationPath('README.md'), this)
+    this.fs.copy(this.templatePath('.images/vscodeScreenshot.png'), this.destinationPath('.images/vscodeScreenshot.png'), this)
+    if (!fs.existsSync('src/commands')) {
+      this.fs.copyTpl(this.templatePath(`src/sfdxCommand.${this._ext}.ejs`), this.destinationPath(`src/commands/${topic}/${sfdxExampleCommand}.${this._ext}`), {
+        ...opts,
+        pluginName: this.pjson.name,
+        commandName: sfdxExampleCommand,
+        topicName: topic
+      })
+    }
+    this.fs.copyTpl(this.templatePath('sfdxPlugin/src/index.ts'), this.destinationPath('src/index.ts'), opts)
+    if (this.mocha && !fs.existsSync('test')) {
+      this.fs.copyTpl(this.templatePath(`sfdxPlugin/test/command.test.${this._ext}.ejs`), this.destinationPath(`test/commands/${topic}/${sfdxExampleCommand}.test.${this._ext}`),
+        {...opts, name: sfdxExampleCommand, topic})
+    }
+
+    if (!fs.existsSync('messages/messages.json')) {
+      this.fs.copyTpl(this.templatePath('messages/messages.json'), this.destinationPath(`messages/${sfdxExampleCommand}.json`), this)
+    }
+
+    if (!fs.existsSync('.vscode/launch.json')) {
+      this.fs.copyTpl(this.templatePath('.vscode/launch.json'), this.destinationPath(`.vscode/launch.json`), this)
     }
   }
 

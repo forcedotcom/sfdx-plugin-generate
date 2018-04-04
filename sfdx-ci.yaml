@@ -1,0 +1,4 @@
+jobs:
+  - name: publish
+    skipTests: true
+  - name: promote

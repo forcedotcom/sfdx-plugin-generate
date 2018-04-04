@@ -349,10 +349,12 @@ class App extends Generator {
     }
 
     if (this.ts) {
-      if (this.tslint) {
-        this.fs.copyTpl(this.templatePath('tslint.json'), this.destinationPath('tslint.json'), this)
+      if (this.type !== 'sfdx-plugin') {
+        if (this.tslint) {
+          this.fs.copyTpl(this.templatePath('tslint.json'), this.destinationPath('tslint.json'), this)
+        }
+        this.fs.copyTpl(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'), this)
       }
-      this.fs.copyTpl(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'), this)
       if (this.mocha) {
         if (this.type === 'sfdx-plugin') {
           this.fs.copyTpl(this.templatePath('sfdxPlugin/test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
@@ -485,7 +487,7 @@ class App extends Generator {
         'ts-node@5',
         'tslib',
       )
-      if (this.tslint) {
+      if (this.tslint && this.type !== 'sfdx-plugin') {
         devDependencies.push(
           '@oclif/tslint',
           'tslint',
@@ -577,6 +579,8 @@ class App extends Generator {
     this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/README.md.ejs'), this.destinationPath('README.md'), this)
     this.fs.copy(this.templatePath('.images/vscodeScreenshot.png'), this.destinationPath('.images/vscodeScreenshot.png'), this)
+    this.fs.copyTpl(this.templatePath('sfdxPlugin/tslint.json'), this.destinationPath('tslint.json'), this)
+    this.fs.copyTpl(this.templatePath('sfdxPlugin/tsconfig.json'), this.destinationPath('tsconfig.json'), this)
     if (!fs.existsSync('src/commands')) {
       this.fs.copyTpl(this.templatePath(`src/sfdxCommand.${this._ext}.ejs`), this.destinationPath(`src/commands/${topic}/${sfdxExampleCommand}.${this._ext}`), {
         ...opts,

@@ -4,7 +4,7 @@
   "version": "0.0.5",
   "author": "ALM - CI",
   "bin": "./bin/run",
-  "bugs": "",
+  "bugs": "https://github.com/forcedotcom/sfdx-plugin-generate/issues",
   "dependencies": {
     "@oclif/command": "^1.4.6",
     "@oclif/config": "^1.3.61",
@@ -55,7 +55,7 @@
     "/templates",
     "/messages"
   ],
-  "homepage": "",
+  "homepage": "https://github.com/forcedotcom/sfdx-plugin-generate",
   "keywords": [
     "oclif"
   ],

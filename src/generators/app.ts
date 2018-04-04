@@ -238,7 +238,7 @@ class App extends Generator {
       ]) as any
     }
     debug(this.answers)
-    const sfdxPluginOptions = {typescript: true, mocha: true, 'semantic-release': false}
+    const sfdxPluginOptions = {typescript: true, mocha: true, 'semantic-release': false, tslint: true, yarn: true}
     this.options = this.type === 'sfdx-plugin' ? sfdxPluginOptions : this.answers.options
     this.ts = this.options.typescript
     this.tslint = this.options.tslint

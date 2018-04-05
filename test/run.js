@@ -25,7 +25,9 @@ function build(type, features) {
   if (features === 'typescript') options = '--options=yarn,typescript'
   if (features === 'mocha') options = '--options=yarn,mocha'
   let dir = CI ? tmp.tmpNameSync() : path.join(__dirname, '../tmp')
-  dir = path.join(dir, type, features)
+  // replace colon with dash because running commands
+  // inside of a directory with a colon in the name causes errors
+  dir = path.join(dir, type.replace(':', '-'), features)
   sh.rm('-rf', dir)
   generate(`${type} ${dir} --defaults ${options}`)
   sh.cd(dir)
@@ -89,6 +91,12 @@ module.exports = file => {
         generate('hook myhook --defaults --force')
         sh.exec('yarn test')
         sh.exec('node ./bin/run hello')
+        sh.exec('yarn run prepublishOnly')
+        break
+      case 'plugins:generate':
+        build('plugins:generate', 'basic')
+        sh.exec('yarn test')
+        sh.exec('node ./bin/run hello:org --help')
         sh.exec('yarn run prepublishOnly')
         break
       }

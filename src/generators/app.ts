@@ -600,7 +600,7 @@ class App extends Generator {
     }
 
     if (!fs.existsSync('.vscode/launch.json')) {
-      this.fs.copyTpl(this.templatePath('.vscode/launch.json'), this.destinationPath(`.vscode/launch.json`), this)
+      this.fs.copyTpl(this.templatePath('.vscode/launch.json'), this.destinationPath('.vscode/launch.json'), this)
     }
   }
 

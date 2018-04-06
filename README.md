@@ -163,16 +163,12 @@ See [oclif/oclif#-topics](https://github.com/oclif/oclif#-topics) for more infor
 
 ## Important Note for Plugin Command Developers
 Because this is a TypeScript project, you need to compile the changes you make to your commands before running the commands. 
-* If you linked your plugin to the Salesforce CLI, to compile your code and update the `.oclif.manifest.json` file that is consumed by the Salesforce CLI, run:
-    ```sh-session
-    yarn run prepare
-    ```
 
-* If you use the `bin/run` script to run your commands, to compile your changes, run: 
-    ```sh-session
-    yarn run build
-    ```
-  
+To compile your code and update the `.oclif.manifest.json` file that contains your command definitions, run:
+```sh-session
+yarn run prepare
+```
+
 ## Debugging your plugin:
 We recommend using the Visual Studio Code (VS Code) IDE for your plugin development. Included in the `.vscode` directory of the generated plugin is a `launch.json` config file, which allows you to attach a debugger to the node process when running your commands.
 

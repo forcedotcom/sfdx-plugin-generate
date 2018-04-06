@@ -1,4 +1,5 @@
 {
   "commandDescription": "Prints a greeting and your org id(s)!",
-  "nameFlagDescription": "name to print"
+  "nameFlagDescription": "name to print",
+  "forceFlagDescription": "example boolean flag"
 }

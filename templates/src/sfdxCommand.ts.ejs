@@ -25,7 +25,7 @@ export default class <%- klass %> extends SfdxCommand {
   protected static flagsConfig = {
     // flag with a value (-n, --name=VALUE)
     name: flags.string({char: 'n', description: messages.getMessage('nameFlagDescription')}),
-    force: flags.boolean({char: 'f'})
+    force: flags.boolean({char: 'f', description: messages.getMessage('forceFlagDescription')})
   };
 
   // Comment this out if your command does not require an org username

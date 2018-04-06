@@ -1,5 +1,6 @@
-import Base from '../../command_base'
 import {flags} from '@oclif/command'
+
+import Base from '../../command_base'
 
 export default class Generate extends Base {
   static flags = {

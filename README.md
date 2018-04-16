@@ -1,5 +1,7 @@
 Salesforce Plugin Generator (Beta)
 ==================
+[![Build status](https://ci.appveyor.com/api/projects/status/ax4ien7syq9somwb?svg=true)](https://ci.appveyor.com/project/allileong/sfdx-plugin-generate)
+
 <!-- toc -->
 * [Description](#description)
 * [Usage](#usage)

@@ -27,9 +27,10 @@ function build(type, features) {
   let dir = CI ? tmp.tmpNameSync() : path.join(__dirname, '../tmp')
   // replace colon with dash because running commands
   // inside of a directory with a colon in the name causes errors
-  dir = path.join(dir, type.replace(':', '-'), features)
+  dir = path.join(dir, type, features)
   sh.rm('-rf', dir)
-  generate(`${type} ${dir} --defaults ${options}`)
+  const cmd = type.replace('-', ':')
+  generate(`${cmd} ${dir} --defaults ${options}`)
   sh.cd(dir)
   // sh.exec('git add .')
   // sh.exec('git commit -nm init')
@@ -93,8 +94,8 @@ module.exports = file => {
         sh.exec('node ./bin/run hello')
         sh.exec('yarn run prepublishOnly')
         break
-      case 'plugins:generate':
-        build('plugins:generate', 'basic')
+      case 'plugins-generate':
+        build(cmd, name)
         sh.exec('yarn test')
         sh.exec('node ./bin/run hello:org --help')
         sh.exec('yarn run prepublishOnly')

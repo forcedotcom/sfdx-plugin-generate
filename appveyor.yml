@@ -2,13 +2,8 @@ environment:
   nodejs_version: "9"
   # TEST_SERIES: "1"
   matrix:
-    - TEST_TYPE: base
     - TEST_TYPE: single
-    - TEST_TYPE: plugin
-    - TEST_TYPE: multi
-    - TEST_TYPE: command
-    - TEST_TYPE: hook
-    - TEST_TYPE: plugins-generate 
+
 cache:
   - '%LOCALAPPDATA%\Yarn -> appveyor.yml'
   - node_modules -> yarn.lock

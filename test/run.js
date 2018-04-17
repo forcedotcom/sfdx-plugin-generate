@@ -98,7 +98,7 @@ module.exports = file => {
         build(cmd, name)
         sh.exec('yarn test')
         sh.exec('node ./bin/run hello:org --help')
-        sh.exec('yarn run prepublishOnly')
+        sh.exec('yarn run prepare')
         break
       }
     })

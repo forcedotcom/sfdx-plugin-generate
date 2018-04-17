@@ -1,3 +1,147 @@
+<a name="1.7.30"></a>
+## [1.7.30](https://github.com/oclif/oclif/compare/v1.7.29...v1.7.30) (2018-04-10)
+
+
+### Bug Fixes
+
+* break up code coverage into its own step ([0f2ecae](https://github.com/oclif/oclif/commit/0f2ecae))
+
+<a name="1.7.29"></a>
+## [1.7.29](https://github.com/oclif/oclif/compare/v1.7.28...v1.7.29) (2018-04-10)
+
+
+### Bug Fixes
+
+* remove junit reporter from circle ([1927369](https://github.com/oclif/oclif/commit/1927369))
+
+<a name="1.7.28"></a>
+## [1.7.28](https://github.com/oclif/oclif/compare/v1.7.27...v1.7.28) (2018-04-09)
+
+
+### Bug Fixes
+
+* add another command to multi examples ([3fc97ec](https://github.com/oclif/oclif/commit/3fc97ec))
+* command example generation ([41c00ca](https://github.com/oclif/oclif/commit/41c00ca))
+
+<a name="1.7.27"></a>
+## [1.7.27](https://github.com/oclif/oclif/compare/v1.7.26...v1.7.27) (2018-04-09)
+
+
+### Bug Fixes
+
+* generate readme before packing ([fe9be07](https://github.com/oclif/oclif/commit/fe9be07))
+
+<a name="1.7.26"></a>
+## [1.7.26](https://github.com/oclif/oclif/compare/v1.7.25...v1.7.26) (2018-04-09)
+
+
+### Bug Fixes
+
+* add descriptions for circle tasks ([494d6ac](https://github.com/oclif/oclif/commit/494d6ac))
+
+<a name="1.7.25"></a>
+## [1.7.25](https://github.com/oclif/oclif/compare/v1.7.24...v1.7.25) (2018-04-09)
+
+
+### Bug Fixes
+
+* add descriptions for circle tasks ([de4f924](https://github.com/oclif/oclif/commit/de4f924))
+
+<a name="1.7.24"></a>
+## [1.7.24](https://github.com/oclif/oclif/compare/v1.7.23...v1.7.24) (2018-04-08)
+
+
+### Bug Fixes
+
+* lock down deps ([ac95a07](https://github.com/oclif/oclif/commit/ac95a07))
+
+<a name="1.7.23"></a>
+## [1.7.23](https://github.com/oclif/oclif/compare/v1.7.22...v1.7.23) (2018-04-08)
+
+
+### Bug Fixes
+
+* command path on windows ([#96](https://github.com/oclif/oclif/issues/96)) ([612f401](https://github.com/oclif/oclif/commit/612f401))
+* ignore any node_modules directories ([ceb13f2](https://github.com/oclif/oclif/commit/ceb13f2))
+* ignore package-lock.json ([8cb8582](https://github.com/oclif/oclif/commit/8cb8582))
+* skip eslint files when using typescript ([7dec822](https://github.com/oclif/oclif/commit/7dec822))
+
+<a name="1.7.22"></a>
+## [1.7.22](https://github.com/oclif/oclif/compare/v1.7.21...v1.7.22) (2018-04-08)
+
+
+### Bug Fixes
+
+* fixed lint issues ([3048e06](https://github.com/oclif/oclif/commit/3048e06))
+* remove unneeded script ([016849f](https://github.com/oclif/oclif/commit/016849f))
+
+<a name="1.7.21"></a>
+## [1.7.21](https://github.com/oclif/oclif/compare/v1.7.20...v1.7.21) (2018-04-08)
+
+
+### Bug Fixes
+
+* simplify npm script usage ([8e17b32](https://github.com/oclif/oclif/commit/8e17b32))
+* simplify npm script usage ([417cd49](https://github.com/oclif/oclif/commit/417cd49))
+* use npm pack in test ([7474932](https://github.com/oclif/oclif/commit/7474932))
+* use npm pack in test ([1a4de12](https://github.com/oclif/oclif/commit/1a4de12))
+
+<a name="1.7.20"></a>
+## [1.7.20](https://github.com/oclif/oclif/compare/v1.7.19...v1.7.20) (2018-04-08)
+
+
+### Bug Fixes
+
+* define help flag on initial command ([e1b68a3](https://github.com/oclif/oclif/commit/e1b68a3))
+
+<a name="1.7.19"></a>
+## [1.7.19](https://github.com/oclif/oclif/compare/v1.7.18...v1.7.19) (2018-04-07)
+
+
+### Bug Fixes
+
+* gitignore /dist ([d0bb4f0](https://github.com/oclif/oclif/commit/d0bb4f0))
+
+<a name="1.7.18"></a>
+## [1.7.18](https://github.com/oclif/oclif/compare/v1.7.17...v1.7.18) (2018-04-07)
+
+
+### Bug Fixes
+
+* use posttest instead of lint script ([48516e1](https://github.com/oclif/oclif/commit/48516e1))
+
+<a name="1.7.17"></a>
+## [1.7.17](https://github.com/oclif/oclif/compare/v1.7.16...v1.7.17) (2018-04-06)
+
+
+### Bug Fixes
+
+* set repository to input ([276ac06](https://github.com/oclif/oclif/commit/276ac06))
+
+<a name="1.7.16"></a>
+## [1.7.16](https://github.com/oclif/oclif/compare/v1.7.15...v1.7.16) (2018-04-06)
+
+
+### Bug Fixes
+
+* remove declarations from test tslint ([3d8181b](https://github.com/oclif/oclif/commit/3d8181b))
+
+<a name="1.7.15"></a>
+## [1.7.15](https://github.com/oclif/oclif/compare/v1.7.14...v1.7.15) (2018-04-06)
+
+
+### Bug Fixes
+
+* use package-lock.json or yarn.lock from root only ([9cb57ac](https://github.com/oclif/oclif/commit/9cb57ac))
+
+<a name="1.7.14"></a>
+## [1.7.14](https://github.com/oclif/oclif/compare/v1.7.13...v1.7.14) (2018-04-05)
+
+
+### Bug Fixes
+
+* ignore package-lock.json or yarn.lock ([e589f0a](https://github.com/oclif/oclif/commit/e589f0a))
+
 <a name="1.7.13"></a>
 ## [1.7.13](https://github.com/oclif/oclif/compare/v1.7.12...v1.7.13) (2018-04-04)
 

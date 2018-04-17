@@ -253,16 +253,13 @@ class App extends Generator {
     this.pjson.author = this.answers.author || defaults.author
     this.pjson.files = this.answers.files || defaults.files || [(this.ts ? '/lib' : '/src')]
     this.pjson.license = this.answers.license || defaults.license
-    this.pjson.repository = this.answers.github ? `${this.answers.github.user}/${this.answers.github.repo}` : defaults.repository
-    let npm = this.yarn ? 'yarn' : 'npm'
-    this.pjson.scripts.posttest = `${npm} run lint`
-    // this.pjson.scripts.precommit = 'yarn run lint'
+    this.repository = this.pjson.repository = this.answers.github ? `${this.answers.github.user}/${this.answers.github.repo}` : defaults.repository
     if (this.ts) {
       const tsProject = this.mocha ? 'test' : '.'
-      this.pjson.scripts.lint = `tsc -p ${tsProject} --noEmit`
-      if (this.tslint) this.pjson.scripts.lint += ` && tslint -p ${tsProject} -t stylish`
+      this.pjson.scripts.posttest = `tsc -p ${tsProject} --noEmit`
+      if (this.tslint) this.pjson.scripts.posttest += ` && tslint -p ${tsProject} -t stylish`
     } else {
-      this.pjson.scripts.lint = 'eslint .'
+      this.pjson.scripts.posttest = 'eslint .'
     }
     if (this.mocha) {
       this.pjson.scripts.test = `mocha --forbid-only "test/**/*.test.${this._ext}"`
@@ -270,19 +267,16 @@ class App extends Generator {
       this.pjson.scripts.test = 'echo NO TESTS'
     }
     if (this.ts) {
-      this.pjson.scripts.build = 'rm -rf lib && tsc'
-      this.pjson.scripts.prepublishOnly = `${npm} run build`
+      this.pjson.scripts.prepack = 'rm -rf lib && tsc'
     }
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.prepublishOnly = nps.series(this.pjson.scripts.prepublishOnly, 'oclif-dev manifest')
-      if (this.semantic_release) this.pjson.scripts.prepublishOnly = nps.series(this.pjson.scripts.prepublishOnly, 'oclif-dev readme')
+      this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepack, 'oclif-dev manifest', 'oclif-dev readme')
+      this.pjson.scripts.postpack = nps.series(this.pjson.scripts.postpack, 'rm -f .oclif.manifest.json')
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
-      this.pjson.scripts.clean = 'rm -f .oclif.manifest.json'
-      this.pjson.scripts.postpublish = this.pjson.scripts.preversion = `${npm} run clean`
       this.pjson.files.push('.oclif.manifest.json')
       if (this.type === 'sfdx-plugin') {
         this.pjson.files.push('/messages')
-        this.pjson.scripts.prepare = this.pjson.scripts.prepublishOnly
+        this.pjson.scripts.prepare = this.pjson.scripts.prepack
       }
     }
 
@@ -362,6 +356,10 @@ class App extends Generator {
           this.fs.copyTpl(this.templatePath('test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
         }
       }
+    } else {
+      this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
+      const eslintignore = this._eslintignore()
+      if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
     }
     if (this.mocha && !this.fs.exists('test')) {
       this.fs.copyTpl(this.templatePath('test/helpers/init.js'), this.destinationPath('test/helpers/init.js'), this)
@@ -392,12 +390,6 @@ class App extends Generator {
     this.fs.copyTpl(this.templatePath('gitattributes'), this.destinationPath('.gitattributes'), this)
 
     this.fs.write(this.destinationPath('.gitignore'), this._gitignore())
-    if (this.type !== 'sfdx-plugin') {
-      this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
-      this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
-      const eslintignore = this._eslintignore()
-      if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
-    }
 
     switch (this.type) {
       case 'single':
@@ -424,20 +416,20 @@ class App extends Generator {
       case 'base': break
       case 'single':
         dependencies.push(
-          '@oclif/config',
-          '@oclif/command',
-          '@oclif/plugin-help',
+          '@oclif/config@1',
+          '@oclif/command@1',
+          '@oclif/plugin-help@1',
         )
         break
       case 'plugin':
         dependencies.push(
-          '@oclif/command',
-          '@oclif/config',
+          '@oclif/command@1',
+          '@oclif/config@1',
         )
         devDependencies.push(
-          '@oclif/dev-cli',
-          '@oclif/plugin-help',
-          'globby',
+          '@oclif/dev-cli@1',
+          '@oclif/plugin-help@1',
+          'globby@8',
         )
         break
       case 'sfdx-plugin':
@@ -457,46 +449,43 @@ class App extends Generator {
         break
       case 'multi':
         dependencies.push(
-          '@oclif/config',
-          '@oclif/command',
-          '@oclif/plugin-help',
+          '@oclif/config@1',
+          '@oclif/command@1',
+          '@oclif/plugin-help@1',
         )
         devDependencies.push(
-          '@oclif/dev-cli',
-          'globby',
+          '@oclif/dev-cli@1',
+          'globby@8',
         )
     }
     if (this.mocha) {
       devDependencies.push(
-        'mocha',
-        'chai',
+        'mocha@5',
+        'chai@4',
       )
       if (this.type !== 'base') devDependencies.push(
-        '@oclif/test',
+        '@oclif/test@1',
       )
     }
     if (this.ts) {
       devDependencies.push(
-        // '@types/ansi-styles',
-        '@types/chai',
-        '@types/mocha',
-        '@types/node',
-        // '@types/strip-ansi',
-        // '@types/supports-color',
-        'typescript',
+        '@types/chai@4',
+        '@types/mocha@5',
+        '@types/node@9',
+        'typescript@2.8',
         'ts-node@5',
-        'tslib',
+        'tslib@1',
       )
       if (this.tslint && this.type !== 'sfdx-plugin') {
         devDependencies.push(
-          '@oclif/tslint',
-          'tslint',
+          '@oclif/tslint@1',
+          'tslint@5',
         )
       }
     } else {
       devDependencies.push(
-        'eslint',
-        'eslint-config-oclif',
+        'eslint@4',
+        'eslint-config-oclif@1',
       )
     }
     let yarnOpts = {} as any
@@ -520,8 +509,10 @@ class App extends Generator {
       '.oclif.manifest.json',
       '*-debug.log',
       '*-error.log',
-      '/node_modules',
+      'node_modules',
       '/tmp',
+      '/dist',
+      this.yarn ? '/package-lock.json' : '/yarn.lock',
       this.ts && '/lib',
     ])
       .concat(existing)
@@ -558,8 +549,9 @@ class App extends Generator {
     const opts = {...this as any, _, bin, cmd}
     this.fs.copyTpl(this.templatePath('plugin/bin/run'), this.destinationPath('bin/run'), opts)
     this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
+    const commandPath = this.destinationPath(`src/commands/hello.${this._ext}`)
     if (!fs.existsSync('src/commands')) {
-      this.fs.copyTpl(this.templatePath(`src/command.${this._ext}.ejs`), this.destinationPath(`src/commands/hello.${this._ext}`), {...opts, name: 'hello'})
+      this.fs.copyTpl(this.templatePath(`src/command.${this._ext}.ejs`), commandPath, {...opts, name: 'hello', path: commandPath.replace(process.cwd(), '.')})
     }
     if (this.ts && this.type !== 'multi') {
       this.fs.copyTpl(this.templatePath('plugin/src/index.ts'), this.destinationPath('src/index.ts'), opts)
@@ -609,8 +601,9 @@ class App extends Generator {
     const opts = {...this as any, _, bin, cmd: bin, name: this.pjson.name}
     this.fs.copyTpl(this.templatePath(`single/bin/run.${this._ext}`), this.destinationPath('bin/run'), opts)
     this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
+    const commandPath = this.destinationPath(`src/index.${this._ext}`)
     if (!this.fs.exists(`src/index.${this._ext}`)) {
-      this.fs.copyTpl(this.templatePath(`src/command.${this._ext}.ejs`), this.destinationPath(`src/index.${this._ext}`), opts)
+      this.fs.copyTpl(this.templatePath(`src/command.${this._ext}.ejs`), this.destinationPath(`src/index.${this._ext}`), {...opts, path: commandPath.replace(process.cwd(), '.')})
     }
     if (this.mocha && !this.fs.exists(`test/index.test.${this._ext}`)) {
       this.fs.copyTpl(this.templatePath(`test/command.test.${this._ext}.ejs`), this.destinationPath(`test/index.test.${this._ext}`), opts)

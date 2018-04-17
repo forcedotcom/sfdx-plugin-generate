@@ -83,7 +83,7 @@ jobs:
       - checkout
       - restore_cache: *restore_cache
       - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_get
+      - run: .circleci/setup_git
       - run: yarn exec nps test.plugins-generate
       - store_test_results: *store_test_results
   node-8-base: &node_8

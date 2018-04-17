@@ -390,6 +390,9 @@ class App extends Generator {
     this.fs.copyTpl(this.templatePath('gitattributes'), this.destinationPath('.gitattributes'), this)
 
     this.fs.write(this.destinationPath('.gitignore'), this._gitignore())
+    if (this.type !== 'sfdx-plugin') {
+      this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
+    }
 
     switch (this.type) {
       case 'single':

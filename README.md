@@ -14,7 +14,7 @@ Salesforce Plugin Generator (Beta)
 
 This is the generator plugin for building plugins for the Salesforce CLI. The generated sfdx plugin and command are built on top of the [oclif cli framework](https://github.com/oclif/oclif).
 ____
-**As a beta feature, Salesforce Plugin Generator is a preview and isn’t part of the “Services” under your master subscription agreement with Salesforce. Use this feature at your sole discretion, and make your purchase decisions only on the basis of generally available products and features. Salesforce doesn’t guarantee general availability of this feature within any particular time frame or at all, and we can discontinue it at any time. This feature is for evaluation purposes only, not for production use. It’s offered as is and isn’t supported, and Salesforce has no liability for any harm or damage arising out of or in connection with it. All restrictions, Salesforce reservation of rights, obligations concerning the Services, and terms for related Non-Salesforce Applications and Content apply equally to your use of this feature. You can provide feedback and suggestions for Salesforce Plugin Generator in the [issues](TODO:replace-with-link-to-github-issues) section of this repo.**
+**As a beta feature, Salesforce Plugin Generator is a preview and isn’t part of the “Services” under your master subscription agreement with Salesforce. Use this feature at your sole discretion, and make your purchase decisions only on the basis of generally available products and features. Salesforce doesn’t guarantee general availability of this feature within any particular time frame or at all, and we can discontinue it at any time. This feature is for evaluation purposes only, not for production use. It’s offered as is and isn’t supported, and Salesforce has no liability for any harm or damage arising out of or in connection with it. All restrictions, Salesforce reservation of rights, obligations concerning the Services, and terms for related Non-Salesforce Applications and Content apply equally to your use of this feature. You can provide feedback and suggestions for Salesforce Plugin Generator in the [issues](https://github.com/forcedotcom/sfdx-plugin-generate/issues) section of this repo.**
 ____
 # Usage
 
@@ -202,12 +202,17 @@ To make changes to the plugin generator, follow these instructions.
 Note: Only Node 8+ is supported. If you are new to Node.js, use nvm to install node.
   
 1. Start by cloning the repo.
+    With SSH:
     ```sh-session
-    $ git clone TODO:update-with-repo
+    $ git clone git@github.com:forcedotcom/sfdx-plugin-generate.git
+    ```
+    or with HTTPS:
+    ```sh-session
+    $ git clone https://github.com/forcedotcom/sfdx-plugin-generate.git
     ```
 2. Change directories into the cloned repo.
     ```sh-session
-    $ cd TODO:update-with-repo-name
+    $ cd sfdx-plugin-generate
     ```
 3. If you don't have Node.js version 8 or above installed, install it now.
     ```sh-session
@@ -223,7 +228,7 @@ Note: Only Node 8+ is supported. If you are new to Node.js, use nvm to install n
     ```
 6. Compile the TypeScript code.
     ```sh-session
-    $ yarn run build
+    $ yarn prepack
     ```
 7. Now you are ready to run the plugins:generate command and make any changes to the generator.
     ```sh-session

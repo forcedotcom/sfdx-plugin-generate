@@ -8,7 +8,6 @@ jobs:
     environment:
       <%_ if (mocha) { _%>
       NYC: "yarn exec nyc -- --nycrc-path node_modules/@oclif/nyc-config/.nycrc"
-      MOCHA_FILE: "reports/mocha.xml"
       <%_ } _%>
     steps:
       - checkout
@@ -16,8 +15,11 @@ jobs:
           keys:
             - v1-yarn-{{checksum ".circleci/config.yml"}}-{{ checksum "yarn.lock"}}
             - v1-yarn-{{checksum ".circleci/config.yml"}}
-      - run: .circleci/greenkeeper
-      - run: yarn add -D nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
+      - run:
+          name: Install dependencies
+          command: |
+            .circleci/greenkeeper
+            yarn add -D nyc@11 @oclif/nyc-config@1
       <%_ if (['single', 'multi'].includes(type)) { _%>
       - run: ./bin/run --version
       <%_ } _%>
@@ -25,16 +27,17 @@ jobs:
       - run: ./bin/run --help
       <%_ } _%>
       <%_ if (mocha) { _%>
-      - run: |
-          mkdir -p reports
-          $NYC yarn test --reporter mocha-junit-reporter
-          $NYC report --reporter text-lcov > coverage.lcov
-          curl -s https://codecov.io/bash | bash
+      - run:
+          name: Testing
+          command: $NYC yarn test
+      - run:
+          name: Submitting code coverage to codecov
+          command: |
+            $NYC report --reporter text-lcov > coverage.lcov
+            curl -s https://codecov.io/bash | bash
       <%_ } else { _%>
       - run: yarn test
       <%_ } _%>
-      - store_test_results: &store_test_results
-          path: ~/cli/reports
   node-8:
     <<: *test
     docker:
@@ -46,11 +49,19 @@ jobs:
       - add_ssh_keys
       - checkout
       - restore_cache: *restore_cache
-      - run: yarn global add @oclif/semantic-release@2 semantic-release@15
-      - run: yarn --frozen-lockfile
-      - run: |
-          export PATH=/usr/local/share/.config/yarn/global/node_modules/.bin:$PATH
-          semantic-release -e @oclif/semantic-release
+      - run:
+          name: Install dependencies
+          command: |
+            yarn global add @oclif/semantic-release@3 semantic-release@15
+            yarn --frozen-lockfile
+      - run:
+          name: Cutting release
+          command: |
+            export PATH=/usr/local/share/.config/yarn/global/node_modules/.bin:$PATH
+            semantic-release -e @oclif/semantic-release
+      - run:
+          name: Add dev packages to cache
+          command: yarn add -D nyc@11 @oclif/nyc-config@1
       - save_cache:
           key: v1-yarn-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
           paths:

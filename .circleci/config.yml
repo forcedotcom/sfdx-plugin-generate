@@ -149,20 +149,6 @@ workflows:
       - node-latest-command: {requires: [lint] }
       - node-latest-hook: {requires: [lint] }
       - node-latest-plugins-generate: {requires: [lint] }
-      - cache: {requires: [release] }
-      - release:
-          context: org-global
-          filters:
-            branches: {only: master}
-          requires:
-            - lint
-            - node-latest-base
-            - node-latest-single
-            - node-latest-plugin
-            - node-latest-multi
-            - node-latest-command
-            - node-latest-hook
-            - node-latest-plugins-generate
 
   nightly:
     triggers:

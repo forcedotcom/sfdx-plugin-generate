@@ -1,9 +1,12 @@
 import {flags} from '@oclif/command';
-import {join} from 'path';
 import {SfdxCommand, core} from '@salesforce/command';
 <%_ const klass = _.upperFirst(_.camelCase(commandName)) _%>
 
-core.Messages.importMessagesDirectory(join(__dirname, '..', '..', '..'));
+// Initialize Messages with the current plugin directory
+core.Messages.importMessagesDirectory(__dirname);
+
+// Load the specific messages for this file. Messages from @salesforce/command, @salesforce/core,
+// or any library that is using the messages framework can also be loaded this way.
 const messages = core.Messages.loadMessages('<%- pluginName %>', '<%- commandName %>');
 
 export default class <%- klass %> extends SfdxCommand {

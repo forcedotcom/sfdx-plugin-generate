@@ -1,4 +1,4 @@
 jobs:
   - name: publish
-    skipTests: true
+    buildTarget: 'prepack'
   - name: promote

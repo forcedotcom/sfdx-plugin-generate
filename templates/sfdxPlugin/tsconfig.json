@@ -4,11 +4,7 @@
     "outDir": "./lib",
     "rootDirs": [
       "./src"
-    ],
-    "baseUrl": "./",
-    "paths" : {
-      "*" : ["./node_modules/@salesforce/core/typings/*"]
-    }
+    ]
   },
   "include": [
     "./src/**/*"

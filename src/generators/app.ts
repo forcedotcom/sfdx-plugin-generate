@@ -445,6 +445,7 @@ class App extends Generator {
         devDependencies.push(
           '@oclif/dev-cli',
           '@oclif/plugin-help',
+          '@types/jsforce',
           'globby',
           '@salesforce/dev-config',
           'sinon',

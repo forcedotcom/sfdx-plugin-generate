@@ -56,6 +56,12 @@ export default class <%- klass %> extends SfdxCommand {
     // Query the org
     const result = await conn.query<Organization>(query);
 
+    // Organization will always return one result, but this is an example of throwing an error
+    // The output and --json will automatically be handled for you.
+    if (!result.records || result.records.length <= 0) {
+      throw new core.SfdxError(messages.getMessage('errorNoOrgResults', [this.org.getOrgId()]));
+    }
+
     // Organization always only returns one result
     const orgName = result.records[0].Name;
     const trialExpirationDate = result.records[0].TrialExpirationDate;

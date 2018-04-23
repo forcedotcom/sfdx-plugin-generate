@@ -5,8 +5,8 @@ import {SfdxCommand, core} from '@salesforce/command';
 // Initialize Messages with the current plugin directory
 core.Messages.importMessagesDirectory(__dirname);
 
-// Load the specific messages for this file. Any plugins', @salesforce/command,
-// or @salesforce/core messages can be loaded this way.
+// Load the specific messages for this file. Messages from @salesforce/command, @salesforce/core,
+// or any library that is using the messages framework can also be loaded this way.
 const messages = core.Messages.loadMessages('<%- pluginName %>', '<%- commandName %>');
 
 export default class <%- klass %> extends SfdxCommand {

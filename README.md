@@ -1,6 +1,6 @@
 Salesforce Plugin Generator (Beta)
 ==================
-[![Build status](https://ci.appveyor.com/api/projects/status/ax4ien7syq9somwb?svg=true)](https://ci.appveyor.com/project/allileong/sfdx-plugin-generate)
+[![Build status](https://ci.appveyor.com/api/projects/status/4b8jf0snpxf2dqsf?svg=true)](https://ci.appveyor.com/project/forcedotcom/sfdx-plugin-generate)
 [![CircleCI](https://circleci.com/gh/forcedotcom/sfdx-plugin-generate.svg?style=svg)](https://circleci.com/gh/forcedotcom/sfdx-plugin-generate)
 <!-- toc -->
 * [Description](#description)

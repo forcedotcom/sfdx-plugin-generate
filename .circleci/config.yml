@@ -37,15 +37,6 @@ jobs:
       - run: .circleci/setup_git
       - run: yarn exec nps test.base
       - store_test_results: *store_test_results
-  node-latest-plugin:
-    <<: *lint
-    steps: &plugin_steps
-      - checkout
-      - restore_cache: *restore_cache
-      - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_git
-      - run: yarn exec nps test.plugin
-      - store_test_results: *store_test_results
   node-latest-single:
     <<: *lint
     steps: &single_steps

@@ -52,14 +52,6 @@ module.exports = file => {
         build(cmd, name)
         sh.exec('yarn test')
         break
-      case 'plugin':
-        build(cmd, name)
-        sh.exec('yarn test')
-        sh.exec('node ./bin/run hello')
-        sh.exec('node ./bin/run')
-        sh.exec('node ./bin/run --help')
-        sh.exec('npm pack --unsafe-perm')
-        break
       case 'single':
         build(cmd, name)
         sh.exec('yarn test')

@@ -85,12 +85,6 @@ jobs:
   node-8-single:
     <<: *node_8
     steps: *single_steps
-  node-8-plugin:
-    <<: *node_8
-    steps: *plugin_steps
-  node-8-single:
-    <<: *node_8
-    steps: *single_steps
   node-8-multi:
     <<: *node_8
     steps: *multi_steps
@@ -135,7 +129,6 @@ workflows:
       - lint
       - node-latest-base: {requires: [lint] }
       - node-latest-single: {requires: [lint] }
-      - node-latest-plugin: {requires: [lint] }
       - node-latest-multi: {requires: [lint] }
       - node-latest-command: {requires: [lint] }
       - node-latest-hook: {requires: [lint] }
@@ -153,14 +146,12 @@ workflows:
       - lint
       - node-latest-base: {requires: [lint] }
       - node-latest-single: {requires: [lint] }
-      - node-latest-plugin: {requires: [lint] }
       - node-latest-multi: {requires: [lint] }
       - node-latest-command: {requires: [lint] }
       - node-latest-hook: {requires: [lint] }
       - node-latest-plugins-generate: {requires: [lint] }
       - node-8-base: {requires: [lint] }
       - node-8-single: {requires: [lint] }
-      - node-8-plugin: {requires: [lint] }
       - node-8-multi: {requires: [lint] }
       - node-8-command: {requires: [lint] }
       - node-8-hook: {requires: [lint] }

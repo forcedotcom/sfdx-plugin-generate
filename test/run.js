@@ -52,14 +52,6 @@ module.exports = file => {
         build(cmd, name)
         sh.exec('yarn test')
         break
-      case 'plugin':
-        build(cmd, name)
-        sh.exec('yarn test')
-        sh.exec('node ./bin/run hello')
-        sh.exec('node ./bin/run')
-        sh.exec('node ./bin/run --help')
-        sh.exec('npm pack --unsafe-perm')
-        break
       case 'single':
         build(cmd, name)
         sh.exec('yarn test')
@@ -75,23 +67,6 @@ module.exports = file => {
         sh.exec('node ./bin/run hello')
         sh.exec('node ./bin/run help hello')
         sh.exec('node ./bin/run hello --help')
-        sh.exec('npm pack --unsafe-perm')
-        break
-      case 'command':
-        build('plugin', name)
-        generate('command foo:bar:baz --defaults --force')
-        sh.exec('yarn test')
-        sh.exec('node ./bin/run hello')
-        sh.exec('node ./bin/run foo:bar:baz')
-        sh.exec('node ./bin/run help foo:bar:baz')
-        sh.exec('node ./bin/run foo:bar:baz --help')
-        sh.exec('npm pack --unsafe-perm')
-        break
-      case 'hook':
-        build('plugin', name)
-        generate('hook myhook --defaults --force')
-        sh.exec('yarn test')
-        sh.exec('node ./bin/run hello')
         sh.exec('npm pack --unsafe-perm')
         break
       case 'plugins-generate':

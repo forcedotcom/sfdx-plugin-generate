@@ -5,8 +5,6 @@ environment:
     - TEST_TYPE: base
     - TEST_TYPE: single
     - TEST_TYPE: multi
-    - TEST_TYPE: command
-    - TEST_TYPE: hook
     - TEST_TYPE: plugins-generate
 
 cache:

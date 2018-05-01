@@ -77,7 +77,8 @@
     "posttest": "yarn run lint",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest",
     "version": "oclif-dev readme && git add README.md",
-    "test": "nps test"
+    "test": "nps test",
+    "prepare": "rm -f .oclif.manifest.json && yarn run prepack"
   },
   "types": "lib/index.d.ts"
 }

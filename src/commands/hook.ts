@@ -10,6 +10,7 @@ export interface Options {
 }
 
 export default abstract class HookCommand extends Base {
+  static hidden = true
   static description = 'add a hook to an existing CLI or plugin'
 
   static flags = {

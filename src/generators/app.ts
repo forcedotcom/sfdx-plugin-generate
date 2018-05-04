@@ -437,18 +437,18 @@ class App extends Generator {
         break
       case 'sfdx-plugin':
         dependencies.push(
-          '@oclif/command',
-          '@oclif/config',
-          '@oclif/errors',
+          '@oclif/command@1',
+          '@oclif/config@1',
+          '@oclif/errors@1',
           '@salesforce/command@0.1.2',
         )
         devDependencies.push(
-          '@oclif/dev-cli',
-          '@oclif/plugin-help',
-          '@types/jsforce',
-          'globby',
+          '@oclif/dev-cli@1',
+          '@oclif/plugin-help@1',
+          '@types/jsforce@1.8.9',
+          'globby@8',
           '@salesforce/dev-config@1.0.4',
-          'sinon',
+          'sinon@5',
         )
         break
       case 'multi':

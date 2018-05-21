@@ -63,7 +63,7 @@
   "main": "lib/index.js",
   "oclif": {
     "topics": {
-      "plugins": { "description": "add/remove CLI plugins"}
+      "plugins": { "description": "add/remove/create CLI plugins"}
     },
     "commands": "./lib/commands",
     "plugins": [

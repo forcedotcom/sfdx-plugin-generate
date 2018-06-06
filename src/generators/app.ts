@@ -322,6 +322,11 @@ class App extends Generator {
         this.pjson.oclif = {
           commands: `./${this.ts ? 'lib' : 'src'}/commands`,
           // hooks: {init: `./${this.ts ? 'lib' : 'src'}/hooks/init`},
+          topics: {
+            hello: {
+              description: 'Commands to say hello.'
+            }
+          },
           ...this.pjson.oclif,
         }
         break

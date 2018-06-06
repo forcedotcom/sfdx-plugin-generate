@@ -104,12 +104,12 @@ Now you are ready to develop your own commands!
 
 
 # Salesforce CLI Plugin Development 
-The generated `hello:org` command extends [sfdx-command](TODO:add-link), which in turn extends [oclif/command](https://github.com/oclif/command). When you build your own commands, you extend `sfdx-command` too. 
+The generated `hello:org` command extends [sfdx-command](https://www.npmjs.com/package/@salesforce/command), which in turn extends [oclif/command](https://github.com/oclif/command). When you build your own commands, you extend `sfdx-command` too.
   
-`sfdx-command` comes packed with functionality to speed up your command development and interact more easily with Salesforce DX projects and Salesforce orgs. `sfdx-command` uses features of [sfdx-core](TODO:add-link), which exposes Salesforce API functionality that's useful in command development. See these libraries' documentation pages for a full list of features. 
+`sfdx-command` comes packed with functionality to speed up your command development and interact more easily with Salesforce DX projects and Salesforce orgs. `sfdx-command` uses features of [sfdx-core](https://developer.salesforce.com/media/salesforce-cli/docs/@salesforce/core/index.html), which exposes Salesforce API functionality that's useful in command development. See these libraries' documentation pages for a full list of features.
   
 ## Features
-The `hello:org` command highlights a small subset of the features available through [sfdx-command](TODO:add-link), [sfdx-core](TODO:add-link), and [oclif](https://github.com/oclif/command). You can find the code for the `hello:org` command at `yourPluginName/src/commands/hello/org.ts`.
+The `hello:org` command highlights a small subset of the features available through [sfdx-command](https://www.npmjs.com/package/@salesforce/command), [sfdx-core](https://developer.salesforce.com/media/salesforce-cli/docs/@salesforce/core/index.html), and [oclif](https://github.com/oclif/command). You can find the code for the `hello:org` command at `yourPluginName/src/commands/hello/org.ts`.
 
 ### Command Parameters
 Add standard and custom parameters to your commands.
@@ -131,7 +131,7 @@ public async run(): Promise<any> {
 }
 ```
 
-[TODO: link to sfdx-command flag docs]().
+See [sfdx-command](https://www.npmjs.com/package/@salesforce/command).
 
 #### Custom Parameters
 In addition to the `sfdx-command` parameters, you can specify your own custom parameters by setting the `flagsConfig` variable.
@@ -143,10 +143,10 @@ protected static flagsConfig = {
     force: flags.boolean({char: 'f'})
 };
 ```
-[TODO: link to custom flag configuration documentation]().
+See [custom flag configuration](https://www.npmjs.com/package/@salesforce/command#salesforce-cli-parameters).
 
 ### Message Loading
-The [sfdx-core](TODO: add link to sfdx-core messaging docs) APIs provide a framework for handling command messaging.
+The [sfdx-core](https://developer.salesforce.com/media/salesforce-cli/docs/@salesforce/core/index.html) APIs provide a framework for handling command messaging.
 ```js
 core.Messages.importMessagesDirectory(pathToPluginRootDirectory);
 const messages = core.Messages.loadMessages('yourPluginName', 'org');
@@ -237,8 +237,8 @@ Note: Only Node 8+ is supported. If you are new to Node.js, use nvm to install n
     ```
 
 # Related Docs and Repositories
-* [salesforcedx/sfdx-command](TODO:add-link) - Base Salesforce CLI command
-* [salesforcedx/sfdx-core](TODO:add-link) - Helper API for working with a Salesforce DX project and managing Salesforce orgs 
+* [salesforcedx/sfdx-command](https://www.npmjs.com/package/@salesforce/command) - Base Salesforce CLI command
+* [salesforcedx/sfdx-core](https://developer.salesforce.com/media/salesforce-cli/docs/@salesforce/core/index.html) - Helper API for working with a Salesforce DX project and managing Salesforce orgs
 * [@oclif/command](https://github.com/oclif/command) - Base command for oclif; this can be used directly without the generator
 * [@oclif/config](https://github.com/oclif/config) - Most of the core setup for oclif lives here
 * [@oclif/errors](https://github.com/oclif/errors) - Renders and logs errors from commands

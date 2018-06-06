@@ -477,6 +477,9 @@ class App extends Generator {
       )
     }
     if (this.ts) {
+      dependencies.push(
+        'tslib@^1',
+      )
       devDependencies.push(
         '@types/chai@4',
         '@types/mocha@5',

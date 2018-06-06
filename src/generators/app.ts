@@ -478,15 +478,14 @@ class App extends Generator {
     }
     if (this.ts) {
       dependencies.push(
-        'tslib@^1',
+        'tslib@1',
       )
       devDependencies.push(
         '@types/chai@4',
         '@types/mocha@5',
         '@types/node@9',
         'typescript@2.8',
-        'ts-node@5',
-        'tslib@1',
+        'ts-node@5'
       )
       if (this.tslint && this.type !== 'sfdx-plugin') {
         devDependencies.push(

@@ -39,7 +39,7 @@ export default class <%- klass %> extends SfdxCommand {
   // Set this to true if your command requires a project workspace; 'requiresProject' is false by default
   protected static requiresProject = false;
 
-  public async run(): Promise<any> { // tslint:disable-line:no-any
+  public async run(): Promise<core.AnyJson> {
     const name = this.flags.name || 'world';
 
     // this.org is guaranteed because requiresUsername=true, as opposed to supportsUsername

@@ -322,6 +322,11 @@ class App extends Generator {
         this.pjson.oclif = {
           commands: `./${this.ts ? 'lib' : 'src'}/commands`,
           // hooks: {init: `./${this.ts ? 'lib' : 'src'}/hooks/init`},
+          topics: {
+            hello: {
+              description: 'Commands to say hello.'
+            }
+          },
           ...this.pjson.oclif,
         }
         break
@@ -472,13 +477,15 @@ class App extends Generator {
       )
     }
     if (this.ts) {
+      dependencies.push(
+        'tslib@1',
+      )
       devDependencies.push(
         '@types/chai@4',
         '@types/mocha@5',
         '@types/node@9',
         'typescript@2.8',
-        'ts-node@5',
-        'tslib@1',
+        'ts-node@5'
       )
       if (this.tslint && this.type !== 'sfdx-plugin') {
         devDependencies.push(

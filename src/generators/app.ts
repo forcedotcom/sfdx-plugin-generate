@@ -457,14 +457,14 @@ class App extends Generator {
           '@oclif/command@1',
           '@oclif/config@1',
           '@oclif/errors@1',
-          '@salesforce/command@0.1.5',
+          '@salesforce/command@0.1.6',
         )
         devDependencies.push(
           '@oclif/dev-cli@1',
           '@oclif/plugin-help@1',
-          '@types/jsforce@1.8.9',
+          '@types/jsforce@1.8.13',
           'globby@8',
-          '@salesforce/dev-config@1.0.4',
+          '@salesforce/dev-config@1.1.0',
           'sinon@5',
         )
         break

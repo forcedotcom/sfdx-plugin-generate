@@ -1,3 +1,259 @@
+## [1.8.5](https://github.com/oclif/oclif/compare/v1.8.4...v1.8.5) (2018-06-16)
+
+
+### Bug Fixes
+
+* remove shrinkwrap after publishing ([3a1441d](https://github.com/oclif/oclif/commit/3a1441d))
+
+## [1.8.4](https://github.com/oclif/oclif/compare/v1.8.3...v1.8.4) (2018-06-14)
+
+
+### Bug Fixes
+
+* js setups ([ab161e5](https://github.com/oclif/oclif/commit/ab161e5))
+
+## [1.8.3](https://github.com/oclif/oclif/compare/v1.8.2...v1.8.3) (2018-06-14)
+
+
+### Bug Fixes
+
+* add shrinkwrap file ([819e971](https://github.com/oclif/oclif/commit/819e971))
+
+## [1.8.2](https://github.com/oclif/oclif/compare/v1.8.1...v1.8.2) (2018-06-12)
+
+
+### Bug Fixes
+
+* Add rimraf to devDependencies for single and multi projects and use it in npm scripts ([#123](https://github.com/oclif/oclif/issues/123)) ([764ade1](https://github.com/oclif/oclif/commit/764ade1))
+
+## [1.8.1](https://github.com/oclif/oclif/compare/v1.8.0...v1.8.1) (2018-06-10)
+
+
+### Bug Fixes
+
+* updated deps ([50604af](https://github.com/oclif/oclif/commit/50604af))
+
+<a name="1.8.0"></a>
+# [1.8.0](https://github.com/oclif/oclif/compare/v1.7.56...v1.8.0) (2018-06-02)
+
+
+### Features
+
+* add oclif badge ([620707c](https://github.com/oclif/oclif/commit/620707c))
+
+<a name="1.7.56"></a>
+## [1.7.56](https://github.com/oclif/oclif/compare/v1.7.55...v1.7.56) (2018-06-01)
+
+
+### Bug Fixes
+
+* nyc@12 ([8984592](https://github.com/oclif/oclif/commit/8984592))
+
+<a name="1.7.55"></a>
+## [1.7.55](https://github.com/oclif/oclif/compare/v1.7.54...v1.7.55) (2018-06-01)
+
+
+### Bug Fixes
+
+* add prepare step ([dd927fb](https://github.com/oclif/oclif/commit/dd927fb))
+* remove es module config ([80ef22b](https://github.com/oclif/oclif/commit/80ef22b))
+* updated deps ([64a13d1](https://github.com/oclif/oclif/commit/64a13d1))
+* updated fancy-test ([a58f942](https://github.com/oclif/oclif/commit/a58f942))
+
+<a name="1.7.54"></a>
+## [1.7.54](https://github.com/oclif/oclif/compare/v1.7.53...v1.7.54) (2018-06-01)
+
+
+### Bug Fixes
+
+* add tslib ([360924a](https://github.com/oclif/oclif/commit/360924a))
+* path names for eslint ([64808b3](https://github.com/oclif/oclif/commit/64808b3))
+* typescript 2.9 ([0774d0f](https://github.com/oclif/oclif/commit/0774d0f))
+
+<a name="1.7.53"></a>
+## [1.7.53](https://github.com/oclif/oclif/compare/v1.7.52...v1.7.53) (2018-05-31)
+
+
+### Bug Fixes
+
+* typescript 2.9 ([3c2b1ea](https://github.com/oclif/oclif/commit/3c2b1ea))
+
+<a name="1.7.52"></a>
+## [1.7.52](https://github.com/oclif/oclif/compare/v1.7.51...v1.7.52) (2018-05-30)
+
+
+### Bug Fixes
+
+* command descriptions not showing up in the help ([#124](https://github.com/oclif/oclif/issues/124)) ([dd37310](https://github.com/oclif/oclif/commit/dd37310))
+
+<a name="1.7.51"></a>
+## [1.7.51](https://github.com/oclif/oclif/compare/v1.7.50...v1.7.51) (2018-05-28)
+
+
+### Bug Fixes
+
+* updated deps ([ff3efd0](https://github.com/oclif/oclif/commit/ff3efd0))
+
+<a name="1.7.50"></a>
+## [1.7.50](https://github.com/oclif/oclif/compare/v1.7.49...v1.7.50) (2018-05-24)
+
+
+### Bug Fixes
+
+* add yarn.lock to npm files for plugins ([06f5893](https://github.com/oclif/oclif/commit/06f5893))
+
+<a name="1.7.49"></a>
+## [1.7.49](https://github.com/oclif/oclif/compare/v1.7.48...v1.7.49) (2018-05-22)
+
+
+### Bug Fixes
+
+* use explicit typeRoot path ([dad2052](https://github.com/oclif/oclif/commit/dad2052))
+
+<a name="1.7.48"></a>
+## [1.7.48](https://github.com/oclif/oclif/compare/v1.7.47...v1.7.48) (2018-05-22)
+
+
+### Bug Fixes
+
+* bust circle cache ([7702f90](https://github.com/oclif/oclif/commit/7702f90))
+
+<a name="1.7.47"></a>
+## [1.7.47](https://github.com/oclif/oclif/compare/v1.7.46...v1.7.47) (2018-05-22)
+
+
+### Bug Fixes
+
+* updated deps ([1668568](https://github.com/oclif/oclif/commit/1668568))
+
+<a name="1.7.46"></a>
+## [1.7.46](https://github.com/oclif/oclif/compare/v1.7.45...v1.7.46) (2018-05-14)
+
+
+### Bug Fixes
+
+* updated deps ([6077f5a](https://github.com/oclif/oclif/commit/6077f5a))
+
+<a name="1.7.45"></a>
+## [1.7.45](https://github.com/oclif/oclif/compare/v1.7.44...v1.7.45) (2018-05-13)
+
+
+### Bug Fixes
+
+* flush stdout on exit ([69c0e3e](https://github.com/oclif/oclif/commit/69c0e3e))
+
+<a name="1.7.44"></a>
+## [1.7.44](https://github.com/oclif/oclif/compare/v1.7.43...v1.7.44) (2018-05-11)
+
+
+### Bug Fixes
+
+* move tslib to dependencies ([2e35528](https://github.com/oclif/oclif/commit/2e35528))
+
+<a name="1.7.43"></a>
+## [1.7.43](https://github.com/oclif/oclif/compare/v1.7.42...v1.7.43) (2018-05-11)
+
+
+### Bug Fixes
+
+* use author for license ([2b28a35](https://github.com/oclif/oclif/commit/2b28a35))
+
+<a name="1.7.42"></a>
+## [1.7.42](https://github.com/oclif/oclif/compare/v1.7.41...v1.7.42) (2018-05-10)
+
+
+### Bug Fixes
+
+* [@typs](https://github.com/typs)/node@10 ([e9b6991](https://github.com/oclif/oclif/commit/e9b6991))
+
+<a name="1.7.41"></a>
+## [1.7.41](https://github.com/oclif/oclif/compare/v1.7.40...v1.7.41) (2018-05-10)
+
+
+### Bug Fixes
+
+* updated deps ([663d802](https://github.com/oclif/oclif/commit/663d802))
+
+<a name="1.7.40"></a>
+## [1.7.40](https://github.com/oclif/oclif/compare/v1.7.39...v1.7.40) (2018-05-07)
+
+
+### Bug Fixes
+
+* ts-node 6 ([98580b1](https://github.com/oclif/oclif/commit/98580b1))
+
+<a name="1.7.39"></a>
+## [1.7.39](https://github.com/oclif/oclif/compare/v1.7.38...v1.7.39) (2018-05-07)
+
+
+### Bug Fixes
+
+* use caret versions ([8f582e8](https://github.com/oclif/oclif/commit/8f582e8))
+
+<a name="1.7.38"></a>
+## [1.7.38](https://github.com/oclif/oclif/compare/v1.7.37...v1.7.38) (2018-05-04)
+
+
+### Bug Fixes
+
+* updated deps ([680381b](https://github.com/oclif/oclif/commit/680381b))
+
+<a name="1.7.37"></a>
+## [1.7.37](https://github.com/oclif/oclif/compare/v1.7.36...v1.7.37) (2018-05-03)
+
+
+### Bug Fixes
+
+* rename oclif manifest to not be a dotfile ([84d16a2](https://github.com/oclif/oclif/commit/84d16a2))
+
+<a name="1.7.36"></a>
+## [1.7.36](https://github.com/oclif/oclif/compare/v1.7.35...v1.7.36) (2018-05-01)
+
+
+### Bug Fixes
+
+* updated deps ([7bc00db](https://github.com/oclif/oclif/commit/7bc00db))
+
+<a name="1.7.35"></a>
+## [1.7.35](https://github.com/oclif/oclif/compare/v1.7.34...v1.7.35) (2018-04-21)
+
+
+### Bug Fixes
+
+* updated deps ([e5a8ad7](https://github.com/oclif/oclif/commit/e5a8ad7))
+
+<a name="1.7.34"></a>
+## [1.7.34](https://github.com/oclif/oclif/compare/v1.7.33...v1.7.34) (2018-04-20)
+
+
+### Bug Fixes
+
+* only add root manifest ([e09b530](https://github.com/oclif/oclif/commit/e09b530))
+
+<a name="1.7.33"></a>
+## [1.7.33](https://github.com/oclif/oclif/compare/v1.7.32...v1.7.33) (2018-04-20)
+
+
+### Bug Fixes
+
+* gitignore nyc_output ([270c5ef](https://github.com/oclif/oclif/commit/270c5ef))
+
+<a name="1.7.32"></a>
+## [1.7.32](https://github.com/oclif/oclif/compare/v1.7.31...v1.7.32) (2018-04-18)
+
+
+### Bug Fixes
+
+* use npm instead of yarn in CI scripts when not using yarn ([#108](https://github.com/oclif/oclif/issues/108)) ([04fc972](https://github.com/oclif/oclif/commit/04fc972))
+
+<a name="1.7.31"></a>
+## [1.7.31](https://github.com/oclif/oclif/compare/v1.7.30...v1.7.31) (2018-04-17)
+
+
+### Bug Fixes
+
+* updated deps ([447acaa](https://github.com/oclif/oclif/commit/447acaa))
+
 <a name="1.7.30"></a>
 ## [1.7.30](https://github.com/oclif/oclif/compare/v1.7.29...v1.7.30) (2018-04-10)
 

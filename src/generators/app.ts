@@ -14,6 +14,10 @@ const fixpack = require('fixpack')
 const debug = require('debug')('generator-oclif')
 const {version} = require('../../package.json')
 
+const isWindows = process.platform === 'win32'
+const rmrf = isWindows ? 'rimraf' : 'rm -rf'
+const rmf = isWindows ? 'rimraf' : 'rm -f'
+
 let hasYarn = false
 try {
   execSync('yarn -v')
@@ -262,22 +266,28 @@ class App extends Generator {
       this.pjson.scripts.posttest = 'eslint .'
     }
     if (this.mocha) {
-      this.pjson.scripts.test = `mocha --forbid-only "test/**/*.test.${this._ext}"`
+      this.pjson.scripts.test = `nyc mocha --forbid-only "test/**/*.test.${this._ext}"`
     } else {
       this.pjson.scripts.test = 'echo NO TESTS'
     }
     if (this.ts) {
-      this.pjson.scripts.prepack = 'rm -rf lib && tsc'
+      this.pjson.scripts.prepack = this.pjson.scripts.prepare = nps.series(`${rmrf} lib`, 'tsc')
     }
+
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepack, 'oclif-dev manifest', 'oclif-dev readme')
-      this.pjson.scripts.postpack = nps.series(this.pjson.scripts.postpack, 'rm -f .oclif.manifest.json')
+      this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepare, 'oclif-dev manifest', 'oclif-dev readme', 'npm shrinkwrap')
+      this.pjson.scripts.postpack = `${rmf} oclif.manifest.json npm-shrinkwrap.json`
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
-      this.pjson.files.push('.oclif.manifest.json')
+      this.pjson.files.push('/oclif.manifest.json')
+      this.pjson.files.push('/npm-shrinkwrap.json')
       if (this.type === 'sfdx-plugin') {
         this.pjson.files.push('/messages')
         this.pjson.scripts.prepare = this.pjson.scripts.prepack
       }
+    }
+    if (this.type === 'plugin' && hasYarn) {
+      // for plugins, add yarn.lock file to package so we can lock plugin dependencies
+      this.pjson.files.push('/yarn.lock')
     }
 
     let keywords
@@ -360,13 +370,15 @@ class App extends Generator {
         } else {
           this.fs.copyTpl(this.templatePath('test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
         }
+
+        this.fs.copyTpl(this.templatePath('nycrc'), this.destinationPath('.nycrc'), this)
       }
     } else {
       this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
       const eslintignore = this._eslintignore()
       if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
     }
-    if (this.mocha && !this.fs.exists('test')) {
+    if (this.mocha) {
       this.fs.copyTpl(this.templatePath('test/helpers/init.js'), this.destinationPath('test/helpers/init.js'), this)
       this.fs.copyTpl(this.templatePath('test/mocha.opts'), this.destinationPath('test/mocha.opts'), this)
     }
@@ -424,20 +436,20 @@ class App extends Generator {
       case 'base': break
       case 'single':
         dependencies.push(
-          '@oclif/config@1',
-          '@oclif/command@1',
-          '@oclif/plugin-help@1',
+          '@oclif/config@^1',
+          '@oclif/command@^1',
+          '@oclif/plugin-help@^2',
         )
         break
       case 'plugin':
         dependencies.push(
-          '@oclif/command@1',
-          '@oclif/config@1',
+          '@oclif/command@^1',
+          '@oclif/config@^1',
         )
         devDependencies.push(
-          '@oclif/dev-cli@1',
-          '@oclif/plugin-help@1',
-          'globby@8',
+          '@oclif/dev-cli@^1',
+          '@oclif/plugin-help@^2',
+          'globby@^8',
         )
         break
       case 'sfdx-plugin':
@@ -445,35 +457,36 @@ class App extends Generator {
           '@oclif/command@1',
           '@oclif/config@1',
           '@oclif/errors@1',
-          '@salesforce/command@0.1.5',
+          '@salesforce/command@0.1.6',
         )
         devDependencies.push(
           '@oclif/dev-cli@1',
           '@oclif/plugin-help@1',
-          '@types/jsforce@1.8.9',
+          '@types/jsforce@1.8.13',
           'globby@8',
-          '@salesforce/dev-config@1.0.4',
+          '@salesforce/dev-config@1.1.0',
           'sinon@5',
         )
         break
       case 'multi':
         dependencies.push(
-          '@oclif/config@1',
-          '@oclif/command@1',
-          '@oclif/plugin-help@1',
+          '@oclif/config@^1',
+          '@oclif/command@^1',
+          '@oclif/plugin-help@^2',
         )
         devDependencies.push(
-          '@oclif/dev-cli@1',
-          'globby@8',
+          '@oclif/dev-cli@^1',
+          'globby@^8',
         )
     }
     if (this.mocha) {
       devDependencies.push(
-        'mocha@5',
-        'chai@4',
+        'mocha@^5',
+        'nyc@^12',
+        'chai@^4',
       )
       if (this.type !== 'base') devDependencies.push(
-        '@oclif/test@1',
+        '@oclif/test@^1',
       )
     }
     if (this.ts) {
@@ -483,22 +496,23 @@ class App extends Generator {
       devDependencies.push(
         '@types/chai@4',
         '@types/mocha@5',
-        '@types/node@9',
-        'typescript@2.8',
-        'ts-node@5'
+        '@types/node@10',
+        'typescript@2.9',
+        'ts-node@6'
       )
       if (this.tslint && this.type !== 'sfdx-plugin') {
         devDependencies.push(
-          '@oclif/tslint@1',
-          'tslint@5',
+          '@oclif/tslint@^1',
+          'tslint@^5',
         )
       }
     } else {
       devDependencies.push(
-        'eslint@4',
-        'eslint-config-oclif@1',
+        'eslint@^4',
+        'eslint-config-oclif@^1',
       )
     }
+    if (isWindows) devDependencies.push('rimraf')
     let yarnOpts = {} as any
     if (process.env.YARN_MUTEX) yarnOpts.mutex = process.env.YARN_MUTEX
     const install = (deps: string[], opts: object) => this.yarn ? this.yarnInstall(deps, opts) : this.npmInstall(deps, opts)
@@ -517,12 +531,12 @@ class App extends Generator {
   private _gitignore(): string {
     const existing = this.fs.exists(this.destinationPath('.gitignore')) ? this.fs.read(this.destinationPath('.gitignore')).split('\n') : []
     return _([
-      '.oclif.manifest.json',
       '*-debug.log',
       '*-error.log',
       'node_modules',
       '/tmp',
       '/dist',
+      '/.nyc_output',
       this.yarn ? '/package-lock.json' : '/yarn.lock',
       this.ts && '/lib',
     ])

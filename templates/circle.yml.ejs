@@ -9,11 +9,11 @@ jobs:
       - checkout
       - restore_cache: &restore_cache
           keys:
-            - v1-npm-{{checksum ".circleci/config.yml"}}-{{ checksum "<%- yarn ? 'yarn.lock' : 'package-lock.json' %>"}}
+            - v1-npm-{{checksum ".circleci/config.yml"}}-{{checksum "<%- yarn ? 'yarn.lock' : 'package-lock.json' %>"}}
             - v1-npm-{{checksum ".circleci/config.yml"}}
       - run:
           name: Install dependencies
-          command: .circleci/greenkeeper
+          command: yarn
       <%_ if (['single', 'multi'].includes(type)) { _%>
       - run: ./bin/run --version
       <%_ } _%>
@@ -23,51 +23,26 @@ jobs:
       - run:
           name: Testing
           command: <%- yarn ? 'yarn' : 'npm' %> test
-      <%_ if (mocha) { _%>
+      <%_ if (mocha && codecov) { _%>
       - run:
           name: Submitting code coverage to codecov
           command: |
             ./node_modules/.bin/nyc report --reporter text-lcov > coverage.lcov
             curl -s https://codecov.io/bash | bash
       <%_ } _%>
-      <%_ if (!semantic_release) { _%>
-      - save_cache:
-          key: v1-yarn-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
-          paths:
-            - ~/cli/node_modules
-            <%_ if (yarn) { _%>
-            - /usr/local/share/.cache/yarn
-            - /usr/local/share/.config/yarn
-            <%_ } else { _%>
-            - ~/.npm
-            - /usr/local/lib/node_modules
-            <%_ } _%>
-      <%_ } _%>
   node-8:
     <<: *test
     docker:
       - image: node:8
-<%_ if (semantic_release) { _%>
-  release:
+  cache:
     <<: *test
     steps:
-      - add_ssh_keys
       - checkout
-      - restore_cache: *restore_cache
       - run:
           name: Install dependencies
-          command: |
-            <%- yarn ? 'yarn global add' : 'npm install -g' %> @oclif/semantic-release@3 semantic-release@15
-            <%- yarn ? 'yarn --frozen-lockfile' : 'npm install' %>
-      - run:
-          name: Cutting release
-          command: |
-            <%_ if (yarn) { _%>
-            export PATH=/usr/local/share/.config/yarn/global/node_modules/.bin:$PATH
-            <%_ } _%>
-            semantic-release -e @oclif/semantic-release
+          command: yarn
       - save_cache:
-          key: v1-yarn-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
+          key: v1-npm-{{checksum ".circleci/config.yml"}}-{{checksum "<%- yarn ? 'yarn.lock' : 'package-lock.json' %>"}}
           paths:
             - ~/cli/node_modules
             <%_ if (yarn) { _%>
@@ -77,7 +52,6 @@ jobs:
             - ~/.npm
             - /usr/local/lib/node_modules
             <%_ } _%>
-<%_ } _%>
 
 workflows:
   version: 2
@@ -85,12 +59,9 @@ workflows:
     jobs:
       - node-latest
       - node-8
-<%_ if (semantic_release) { _%>
-      - release:
-          context: org-global
+      - cache:
           filters:
-            branches: {only: master}
-          requires:
-            - node-latest
-            - node-8
-<%_ } _%>
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/

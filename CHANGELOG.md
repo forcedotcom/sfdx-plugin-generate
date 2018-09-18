@@ -1,3 +1,136 @@
+## [1.12.1](https://github.com/oclif/oclif/compare/v1.12.0...v1.12.1) (2018-09-15)
+
+
+### Bug Fixes
+
+* source-map-register is not needed ([dfd3170](https://github.com/oclif/oclif/commit/dfd3170))
+
+# [1.12.0](https://github.com/oclif/oclif/compare/v1.11.7...v1.12.0) (2018-09-15)
+
+
+### Bug Fixes
+
+* break linters out into separate question ([a3edcd4](https://github.com/oclif/oclif/commit/a3edcd4))
+* break linters out into separate question ([c8b05f8](https://github.com/oclif/oclif/commit/c8b05f8))
+* break yarn/npm into separate question ([3f80dea](https://github.com/oclif/oclif/commit/3f80dea))
+* remove unnecessary tsc calls ([85082b5](https://github.com/oclif/oclif/commit/85082b5))
+
+
+### Features
+
+* simplify nyc config ([86a2c52](https://github.com/oclif/oclif/commit/86a2c52))
+* use typescript 3.0 project references ([3a9bf0f](https://github.com/oclif/oclif/commit/3a9bf0f))
+
+## [1.11.7](https://github.com/oclif/oclif/compare/v1.11.6...v1.11.7) (2018-09-14)
+
+
+### Bug Fixes
+
+* greenkeeper-lockfile no longer necessary ([8f55fd0](https://github.com/oclif/oclif/commit/8f55fd0))
+
+## [1.11.6](https://github.com/oclif/oclif/compare/v1.11.5...v1.11.6) (2018-09-14)
+
+
+### Bug Fixes
+
+* updated eslint and tslint ([c2ae997](https://github.com/oclif/oclif/commit/c2ae997))
+
+## [1.11.5](https://github.com/oclif/oclif/compare/v1.11.4...v1.11.5) (2018-08-29)
+
+
+### Bug Fixes
+
+* fixpack -> [@oclif](https://github.com/oclif)/fixpack ([a69c4be](https://github.com/oclif/oclif/commit/a69c4be))
+* hide yarn output when not found ([a3897b1](https://github.com/oclif/oclif/commit/a3897b1))
+* set project path for single CLIs ([3ec87bc](https://github.com/oclif/oclif/commit/3ec87bc)), closes [#161](https://github.com/oclif/oclif/issues/161)
+* use [@oclif](https://github.com/oclif)/fixpack to fix audit warning ([0c2aa20](https://github.com/oclif/oclif/commit/0c2aa20))
+
+## [1.11.4](https://github.com/oclif/oclif/compare/v1.11.3...v1.11.4) (2018-08-22)
+
+
+### Bug Fixes
+
+* updated yeoman and update warning ([deea525](https://github.com/oclif/oclif/commit/deea525))
+
+## [1.11.3](https://github.com/oclif/oclif/compare/v1.11.2...v1.11.3) (2018-08-22)
+
+
+### Bug Fixes
+
+* update eslint to latest major in generator ([#152](https://github.com/oclif/oclif/issues/152)) ([7d72d21](https://github.com/oclif/oclif/commit/7d72d21))
+
+## [1.11.2](https://github.com/oclif/oclif/compare/v1.11.1...v1.11.2) (2018-08-17)
+
+
+### Bug Fixes
+
+* use greenkeeper-lockfile@2 ([1e99237](https://github.com/oclif/oclif/commit/1e99237))
+
+## [1.11.1](https://github.com/oclif/oclif/compare/v1.11.0...v1.11.1) (2018-08-17)
+
+
+### Bug Fixes
+
+* updated oclif and dev-cli ([e2adf70](https://github.com/oclif/oclif/commit/e2adf70))
+
+# [1.11.0](https://github.com/oclif/oclif/compare/v1.10.3...v1.11.0) (2018-08-17)
+
+
+### Bug Fixes
+
+* updated oclif ([edd7fd8](https://github.com/oclif/oclif/commit/edd7fd8))
+
+
+### Features
+
+* typescript 3 and ts-node 7 ([9c58896](https://github.com/oclif/oclif/commit/9c58896))
+
+## [1.10.3](https://github.com/oclif/oclif/compare/v1.10.2...v1.10.3) (2018-08-17)
+
+
+### Bug Fixes
+
+* regenerate readme when adding command ([408705b](https://github.com/oclif/oclif/commit/408705b))
+
+## [1.10.2](https://github.com/oclif/oclif/compare/v1.10.1...v1.10.2) (2018-08-17)
+
+
+### Bug Fixes
+
+* generate readme ([185ef6c](https://github.com/oclif/oclif/commit/185ef6c))
+* newlines in readme ([5281952](https://github.com/oclif/oclif/commit/5281952))
+
+## [1.10.1](https://github.com/oclif/oclif/compare/v1.10.0...v1.10.1) (2018-08-17)
+
+
+### Bug Fixes
+
+* add circleci,appveyor,codecov to examples ([5cc3f54](https://github.com/oclif/oclif/commit/5cc3f54))
+* always use --save with npm ([#149](https://github.com/oclif/oclif/issues/149)) ([151af6f](https://github.com/oclif/oclif/commit/151af6f))
+
+# [1.10.0](https://github.com/oclif/oclif/compare/v1.9.0...v1.10.0) (2018-08-17)
+
+
+### Features
+
+* make appveyor optional ([#138](https://github.com/oclif/oclif/issues/138)) ([74d17c1](https://github.com/oclif/oclif/commit/74d17c1))
+* make codecov optional ([#139](https://github.com/oclif/oclif/issues/139)) ([30c6aff](https://github.com/oclif/oclif/commit/30c6aff))
+* typescript 3.x ([5badc7a](https://github.com/oclif/oclif/commit/5badc7a))
+
+# [1.9.0](https://github.com/oclif/oclif/compare/v1.8.6...v1.9.0) (2018-07-09)
+
+
+### Features
+
+* make circleci optional ([#137](https://github.com/oclif/oclif/issues/137)) ([259d304](https://github.com/oclif/oclif/commit/259d304))
+
+## [1.8.6](https://github.com/oclif/oclif/compare/v1.8.5...v1.8.6) (2018-07-02)
+
+
+### Bug Fixes
+
+* updated deps ([6f71fed](https://github.com/oclif/oclif/commit/6f71fed))
+
 ## [1.8.5](https://github.com/oclif/oclif/compare/v1.8.4...v1.8.5) (2018-06-16)
 
 

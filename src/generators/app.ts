@@ -10,7 +10,7 @@ import yosay = require('yosay')
 
 const nps = require('nps-utils')
 const sortPjson = require('sort-pjson')
-const fixpack = require('fixpack')
+const fixpack = require('@oclif/fixpack')
 const debug = require('debug')('generator-oclif')
 const {version} = require('../../package.json')
 
@@ -20,7 +20,7 @@ const rmf = isWindows ? 'rimraf' : 'rm -f'
 
 let hasYarn = false
 try {
-  execSync('yarn -v')
+  execSync('yarn -v', {stdio: 'ignore'})
   hasYarn = true
 } catch {}
 // function stringToArray(s: string) {
@@ -41,9 +41,12 @@ class App extends Generator {
   options: {
     defaults?: boolean
     mocha: boolean
-    'semantic-release': boolean
+    circleci: boolean
+    appveyor: boolean
+    codecov: boolean
     typescript: boolean
     tslint: boolean
+    eslint: boolean
     yarn: boolean
   }
   args!: {[k: string]: string}
@@ -56,23 +59,28 @@ class App extends Generator {
     bin: string
     description: string
     version: string
-    engines: {node: string}
     github: {repo: string, user: string}
     author: string
     files: string
     license: string
-    options: {
-      mocha: boolean
-      typescript: boolean
-      tslint: boolean
-      yarn: boolean
-      'semantic-release': boolean
+    pkg: string
+    typescript: boolean
+    tslint: boolean
+    eslint: boolean
+    mocha: boolean
+    ci: {
+      circleci: boolean
+      appveyor: boolean
+      codecov: boolean
     }
   }
   mocha!: boolean
-  semantic_release!: boolean
+  circleci!: boolean
+  appveyor!: boolean
+  codecov!: boolean
   ts!: boolean
   tslint!: boolean
+  eslint!: boolean
   yarn!: boolean
   get _ext() { return this.ts ? 'ts' : 'js' }
   get _bin() {
@@ -90,27 +98,30 @@ class App extends Generator {
     this.options = {
       defaults: opts.defaults,
       mocha: opts.options.includes('mocha'),
-      'semantic-release': opts.options.includes('semantic-release'),
+      circleci: opts.options.includes('circleci'),
+      appveyor: opts.options.includes('appveyor'),
+      codecov: opts.options.includes('codecov'),
       typescript: opts.options.includes('typescript'),
       tslint: opts.options.includes('tslint'),
-      yarn: opts.options.includes('yarn'),
+      eslint: opts.options.includes('eslint'),
+      yarn: opts.options.includes('yarn') || hasYarn,
     }
   }
 
   async prompting() {
     let msg
     switch (this.type) {
-      case 'single':
-        msg = 'Time to build a single-command CLI with oclif!'
-        break
-      case 'multi':
-        msg = 'Time to build a multi-command CLI with oclif!'
-        break
-      case 'sfdx-plugin':
-        msg = 'Time to build an sfdx-cli plugin!'
-        break
-      default:
-        msg = `Time to build a oclif ${this.type}!`
+    case 'single':
+      msg = 'Time to build a single-command CLI with oclif!'
+      break
+    case 'multi':
+      msg = 'Time to build a multi-command CLI with oclif!'
+      break
+    case 'sfdx-plugin':
+      msg = 'Time to build an sfdx-cli plugin!'
+      break
+    default:
+      msg = `Time to build a oclif ${this.type}!`
     }
     this.log(yosay(`${msg} Version: ${version}`))
 
@@ -147,10 +158,6 @@ class App extends Generator {
     if (this.repository && (this.repository as any).url) {
       this.repository = (this.repository as any).url
     }
-    try {
-      let yml = this.fs.read('.circleci/config.yml')
-      this.options['semantic-release'] = yml.includes('semantic-release')
-    } catch { }
     if (this.options.defaults) {
       this.answers = defaults
     } else {
@@ -199,83 +206,80 @@ class App extends Generator {
         },
         {
           type: 'input',
-          name: 'engines.node',
-          message: 'node version supported',
-          default: defaults.engines.node,
-          when: !this.pjson.engines.node,
-        },
-        {
-          type: 'input',
           name: 'github.user',
-          message: 'github owner of repository (https://github.com/OWNER/repo)',
+          message: 'Who is the GitHub owner of repository (https://github.com/OWNER/repo)',
           default: repository.split('/').slice(0, -1).pop(),
           when: !this.pjson.repository,
         },
         {
           type: 'input',
           name: 'github.repo',
-          message: 'github name of repository (https://github.com/owner/REPO)',
+          message: 'What is the GitHub name of repository (https://github.com/owner/REPO)',
           default: (answers: any) => (this.pjson.repository || answers.name || this.pjson.name).split('/').pop(),
           when: !this.pjson.repository,
         },
         {
           type: 'checkbox',
-          name: 'options',
-          message: 'optional components to include',
+          name: 'ci',
+          message: 'Add CI service config',
           choices: [
-            {name: 'yarn (npm alternative)', value: 'yarn', checked: this.options.yarn || hasYarn},
-            {name: 'mocha (testing framework)', value: 'mocha', checked: true},
-            {name: 'typescript (static typing for javascript)', value: 'typescript', checked: true},
-            {name: 'tslint (static analysis tool for typescript)', value: 'tslint', checked: true},
-            {name: 'semantic-release (automated version management)', value: 'semantic-release', checked: this.options['semantic-release']}
+            {name: 'circleci (continuous integration/delivery service)', value: 'circleci'},
+            {name: 'appveyor (continuous integration/delivery service)', value: 'appveyor'},
+            {name: 'codecov (online code coverage report viewer)', value: 'codecov'},
           ],
           filter: ((arr: string[]) => _.keyBy(arr)) as any,
           when: this.type !== 'sfdx-plugin'
         },
-        // {
-        //   type: 'string',
-        //   name: 'files',
-        //   message: 'npm files to pack',
-        //   default: (answers: any) => answers.options.typescript ? '/lib' : '/src',
-        //   filter: stringToArray as any,
-        // },
       ]) as any
     }
     debug(this.answers)
-    const sfdxPluginOptions = {typescript: true, mocha: true, 'semantic-release': false, tslint: true, yarn: true}
-    this.options = this.type === 'sfdx-plugin' ? sfdxPluginOptions : this.answers.options
+
+    const sfdxPluginOptions = {
+      typescript: true,
+      mocha: true,
+      tslint: true,
+      yarn: true,
+      circleci: true,
+      appveyor: true,
+      codecov: true,
+      eslint: false
+    }
+    this.options = this.type === 'sfdx-plugin' ? sfdxPluginOptions : this.options
+
     this.ts = this.options.typescript
     this.tslint = this.options.tslint
     this.yarn = this.options.yarn
     this.mocha = this.options.mocha
-    this.semantic_release = this.options['semantic-release']
+    this.circleci = this.options.circleci
+    this.appveyor = this.options.appveyor
+    this.codecov = this.options.codecov
+    this.eslint = this.options.eslint
 
     this.pjson.name = this.answers.name || defaults.name
     this.pjson.description = this.answers.description || defaults.description
     this.pjson.version = this.answers.version || defaults.version
-    this.pjson.engines.node = this.answers.engines ? this.answers.engines.node : defaults.engines.node
+    this.pjson.engines.node = defaults.engines.node
     this.pjson.author = this.answers.author || defaults.author
     this.pjson.files = this.answers.files || defaults.files || [(this.ts ? '/lib' : '/src')]
     this.pjson.license = this.answers.license || defaults.license
     this.repository = this.pjson.repository = this.answers.github ? `${this.answers.github.user}/${this.answers.github.repo}` : defaults.repository
-    if (this.ts) {
-      const tsProject = this.mocha ? 'test' : '.'
-      this.pjson.scripts.posttest = `tsc -p ${tsProject} --noEmit`
-      if (this.tslint) this.pjson.scripts.posttest += ` && tslint -p ${tsProject} -t stylish`
-    } else {
+    if (this.tslint) {
+      this.pjson.scripts.posttest = `tslint -p ${this.mocha ? 'test' : '.'} -t stylish`
+    }
+    if (this.eslint) {
       this.pjson.scripts.posttest = 'eslint .'
     }
     if (this.mocha) {
-      this.pjson.scripts.test = `nyc mocha --forbid-only "test/**/*.test.${this._ext}"`
+      this.pjson.scripts.test = `nyc ${this.ts ? '--extension .ts ' : ''}mocha --forbid-only "test/**/*.test.${this._ext}"`
     } else {
       this.pjson.scripts.test = 'echo NO TESTS'
     }
     if (this.ts) {
-      this.pjson.scripts.prepack = this.pjson.scripts.prepare = nps.series(`${rmrf} lib`, 'tsc')
+      this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b')
     }
 
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepare, 'oclif-dev manifest', 'oclif-dev readme', 'npm shrinkwrap')
+      this.pjson.scripts.prepack = nps.series('oclif-dev manifest', 'oclif-dev readme', 'npm shrinkwrap')
       this.pjson.scripts.postpack = `${rmf} oclif.manifest.json npm-shrinkwrap.json`
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
       this.pjson.files.push('/oclif.manifest.json')
@@ -292,14 +296,14 @@ class App extends Generator {
 
     let keywords
     switch (this.type) {
-      case 'sfdx-plugin':
-        keywords = 'sfdx-plugin'
-        break
-      case 'plugin':
-        keywords = 'oclif-plugin'
-        break
-      default:
-        keywords = 'oclif'
+    case 'sfdx-plugin':
+      keywords = 'sfdx-plugin'
+      break
+    case 'plugin':
+      keywords = 'oclif-plugin'
+      break
+    default:
+      keywords = 'oclif'
     }
 
     this.pjson.keywords = defaults.keywords || [keywords]
@@ -326,21 +330,21 @@ class App extends Generator {
     this.sourceRoot(path.join(__dirname, '../../templates'))
 
     switch (this.type) {
-      case 'multi':
-      case 'plugin':
-      case 'sfdx-plugin':
-        this.pjson.oclif = {
-          commands: `./${this.ts ? 'lib' : 'src'}/commands`,
-          // hooks: {init: `./${this.ts ? 'lib' : 'src'}/hooks/init`},
-          topics: {
-            hello: {
-              description: 'Commands to say hello.'
-            }
-          },
-          ...this.pjson.oclif,
-        }
-        break
-        default:
+    case 'multi':
+    case 'plugin':
+    case 'sfdx-plugin':
+      this.pjson.oclif = {
+        commands: `./${this.ts ? 'lib' : 'src'}/commands`,
+        // hooks: {init: `./${this.ts ? 'lib' : 'src'}/hooks/init`},
+        topics: {
+          hello: {
+            description: 'Commands to say hello.'
+          }
+        },
+        ...this.pjson.oclif,
+      }
+      break
+    default:
     }
     if ((this.type === 'plugin' || this.type === 'sfdx-plugin') && !this.pjson.oclif.devPlugins) {
       this.pjson.oclif.devPlugins = [
@@ -370,41 +374,36 @@ class App extends Generator {
         } else {
           this.fs.copyTpl(this.templatePath('test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
         }
-
-        this.fs.copyTpl(this.templatePath('nycrc'), this.destinationPath('.nycrc'), this)
       }
-    } else {
+    }
+    if (this.eslint) {
       this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
       const eslintignore = this._eslintignore()
       if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
     }
     if (this.mocha) {
-      this.fs.copyTpl(this.templatePath('test/helpers/init.js'), this.destinationPath('test/helpers/init.js'), this)
       this.fs.copyTpl(this.templatePath('test/mocha.opts'), this.destinationPath('test/mocha.opts'), this)
     }
     if (this.fs.exists(this.destinationPath('./package.json'))) {
-      fixpack(this.destinationPath('./package.json'), require('fixpack/config.json'))
+      fixpack(this.destinationPath('./package.json'), require('@oclif/fixpack/config.json'))
     }
     if (_.isEmpty(this.pjson.oclif)) delete this.pjson.oclif
     this.pjson.files = _.uniq((this.pjson.files || []).sort())
 
     this.fs.writeJSON(this.destinationPath('./package.json'), sortPjson(this.pjson))
     this.fs.copyTpl(this.templatePath('editorconfig'), this.destinationPath('.editorconfig'), this)
-    this.fs.copyTpl(this.templatePath('scripts/greenkeeper'), this.destinationPath('.circleci/greenkeeper'), this)
-    // if (this.semantic_release) {
-    //   this.fs.copyTpl(this.templatePath('scripts/release'), this.destinationPath('.circleci/release'), this)
-    // }
-    // this.fs.copyTpl(this.templatePath('scripts/setup_git'), this.destinationPath('.circleci/setup_git'), this)
 
-    this.fs.copyTpl(this.templatePath('circle.yml.ejs'), this.destinationPath('.circleci/config.yml'), this)
-    this.fs.copyTpl(this.templatePath('appveyor.yml.ejs'), this.destinationPath('appveyor.yml'), this)
+    if (this.circleci) {
+      this.fs.copyTpl(this.templatePath('circle.yml.ejs'), this.destinationPath('.circleci/config.yml'), this)
+    }
+    if (this.appveyor) {
+      this.fs.copyTpl(this.templatePath('appveyor.yml.ejs'), this.destinationPath('appveyor.yml'), this)
+    }
+    this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
+
     if (this.pjson.license === 'MIT' && (this.pjson.repository.startsWith('oclif') || this.pjson.repository.startsWith('heroku'))) {
       this.fs.copyTpl(this.templatePath('LICENSE.mit'), this.destinationPath('LICENSE'), this)
     }
-
-    // git
-    // if (this.fromScratch) this.spawnCommandSync('git', ['init'])
-    this.fs.copyTpl(this.templatePath('gitattributes'), this.destinationPath('.gitattributes'), this)
 
     this.fs.write(this.destinationPath('.gitignore'), this._gitignore())
     if (this.type !== 'sfdx-plugin') {
@@ -412,20 +411,20 @@ class App extends Generator {
     }
 
     switch (this.type) {
-      case 'single':
-        this._writeSingle()
-        break
-      case 'plugin':
-        this._writePlugin()
-        break
-      case 'sfdx-plugin':
-        this._writeSfdxPlugin()
-        break
-      case 'multi':
-        this._writeMulti()
-        break
-      default:
-        this._writeBase()
+    case 'single':
+      this._writeSingle()
+      break
+    case 'plugin':
+      this._writePlugin()
+      break
+    case 'sfdx-plugin':
+      this._writeSfdxPlugin()
+      break
+    case 'multi':
+      this._writeMulti()
+      break
+    default:
+      this._writeBase()
     }
   }
 
@@ -433,56 +432,55 @@ class App extends Generator {
     const dependencies: string[] = []
     const devDependencies: string[] = []
     switch (this.type) {
-      case 'base': break
-      case 'single':
-        dependencies.push(
-          '@oclif/config@^1',
-          '@oclif/command@^1',
-          '@oclif/plugin-help@^2',
-        )
-        break
-      case 'plugin':
-        dependencies.push(
-          '@oclif/command@^1',
-          '@oclif/config@^1',
-        )
-        devDependencies.push(
-          '@oclif/dev-cli@^1',
-          '@oclif/plugin-help@^2',
-          'globby@^8',
-        )
-        break
-      case 'sfdx-plugin':
-        dependencies.push(
-          '@oclif/command@1',
-          '@oclif/config@1',
-          '@oclif/errors@1',
-          '@salesforce/command@0.1.6',
-        )
-        devDependencies.push(
-          '@oclif/dev-cli@1',
-          '@oclif/plugin-help@1',
-          '@types/jsforce@1.8.13',
-          'globby@8',
-          '@salesforce/dev-config@1.1.0',
-          'sinon@5',
-        )
-        break
-      case 'multi':
-        dependencies.push(
-          '@oclif/config@^1',
-          '@oclif/command@^1',
-          '@oclif/plugin-help@^2',
-        )
-        devDependencies.push(
-          '@oclif/dev-cli@^1',
-          'globby@^8',
-        )
+    case 'base': break
+    case 'single':
+      dependencies.push(
+        '@oclif/config@^1',
+        '@oclif/command@^1',
+        '@oclif/plugin-help@^2',
+      )
+      break
+    case 'plugin':
+      dependencies.push(
+        '@oclif/command@^1',
+        '@oclif/config@^1',
+      )
+      devDependencies.push(
+        '@oclif/dev-cli@^1',
+        '@oclif/plugin-help@^2',
+        'globby@^8',
+      )
+      break
+    case 'sfdx-plugin':
+      dependencies.push(
+        '@oclif/command@1',
+        '@oclif/config@1',
+        '@oclif/errors@1',
+        '@salesforce/command@0.2.4',
+      )
+      devDependencies.push(
+        '@oclif/dev-cli@^1',
+        '@oclif/plugin-help@^2',
+        'globby@^8',
+        '@salesforce/dev-config@1.1.4',
+        'sinon@5',
+      )
+      break
+    case 'multi':
+      dependencies.push(
+        '@oclif/config@^1',
+        '@oclif/command@^1',
+        '@oclif/plugin-help@^2',
+      )
+      devDependencies.push(
+        '@oclif/dev-cli@^1',
+        'globby@^8',
+      )
     }
     if (this.mocha) {
       devDependencies.push(
         'mocha@^5',
-        'nyc@^12',
+        'nyc@^13',
         'chai@^4',
       )
       if (this.type !== 'base') devDependencies.push(
@@ -494,22 +492,23 @@ class App extends Generator {
         'tslib@1',
       )
       devDependencies.push(
-        '@types/chai@4',
-        '@types/mocha@5',
-        '@types/node@10',
-        'typescript@2.9',
-        'ts-node@6'
+        '@types/chai@^4',
+        '@types/mocha@^5',
+        '@types/node@^10',
+        'typescript@^3.0',
+        'ts-node@^7',
       )
       if (this.tslint && this.type !== 'sfdx-plugin') {
         devDependencies.push(
-          '@oclif/tslint@^1',
+          '@oclif/tslint@^3',
           'tslint@^5',
         )
       }
-    } else {
+    }
+    if (this.eslint) {
       devDependencies.push(
-        'eslint@^4',
-        'eslint-config-oclif@^1',
+        'eslint@^5.5',
+        'eslint-config-oclif@^3.1',
       )
     }
     if (isWindows) devDependencies.push('rimraf')
@@ -517,15 +516,18 @@ class App extends Generator {
     if (process.env.YARN_MUTEX) yarnOpts.mutex = process.env.YARN_MUTEX
     const install = (deps: string[], opts: object) => this.yarn ? this.yarnInstall(deps, opts) : this.npmInstall(deps, opts)
     const dev = this.yarn ? {dev: true} : {'save-dev': true}
-    Promise.all([
+    const save = this.yarn ? {} : {save: true}
+    return Promise.all([
       install(devDependencies, {...yarnOpts, ...dev, ignoreScripts: true}),
-      install(dependencies, yarnOpts),
-    ]).then(() => {
-      if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-        this.spawnCommandSync(path.join('.', 'node_modules/.bin/oclif-dev'), ['readme'])
-      }
-      console.log(`\nCreated ${this.pjson.name} in ${this.destinationRoot()}`)
-    })
+      install(dependencies, {...yarnOpts, ...save}),
+    ])
+  }
+
+  end() {
+    if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
+      this.spawnCommandSync(path.join('.', 'node_modules/.bin/oclif-dev'), ['readme'])
+    }
+    console.log(`\nCreated ${this.pjson.name} in ${this.destinationRoot()}`)
   }
 
   private _gitignore(): string {

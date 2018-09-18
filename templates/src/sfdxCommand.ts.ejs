@@ -1,4 +1,5 @@
 import {core, flags, SfdxCommand} from '@salesforce/command';
+import {AnyJson} from '@salesforce/ts-types';
 <%_ const klass = _.upperFirst(_.camelCase(commandName)) _%>
 
 // Initialize Messages with the current plugin directory
@@ -39,7 +40,7 @@ export default class <%- klass %> extends SfdxCommand {
   // Set this to true if your command requires a project workspace; 'requiresProject' is false by default
   protected static requiresProject = false;
 
-  public async run(): Promise<core.AnyJson> {
+  public async run(): Promise<AnyJson> {
     const name = this.flags.name || 'world';
 
     // this.org is guaranteed because requiresUsername=true, as opposed to supportsUsername

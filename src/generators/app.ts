@@ -219,42 +219,6 @@ class App extends Generator {
           when: !this.pjson.repository,
         },
         {
-          type: 'list',
-          name: 'pkg',
-          message: 'Select a package manager',
-          choices: [
-            {name: 'npm', value: 'npm'},
-            {name: 'yarn', value: 'yarn'},
-          ],
-          default: () => this.options.yarn || hasYarn ? 1 : 0,
-        },
-        {
-          type: 'confirm',
-          name: 'typescript',
-          message: 'TypeScript',
-          default: () => true
-        },
-        {
-          type: 'confirm',
-          name: 'tslint',
-          message: 'Use tslint (linter for TypeScript)',
-          when: (answers: any) => answers.typescript,
-          default: (answers: any) => answers.typescript
-        },
-        {
-          type: 'confirm',
-          name: 'eslint',
-          message: 'Use eslint (linter for JavaScript)',
-          when: (answers: any) => !answers.typescript,
-          default: (answers: any) => !answers.typescript
-        },
-        {
-          type: 'confirm',
-          name: 'mocha',
-          message: 'Use mocha (testing framework)',
-          default: () => true
-        },
-        {
           type: 'checkbox',
           name: 'ci',
           message: 'Add CI service config',
@@ -471,35 +435,34 @@ class App extends Generator {
     case 'base': break
     case 'single':
       dependencies.push(
-          '@oclif/config@^1',
-          '@oclif/command@^1',
-          '@oclif/plugin-help@^2',
-        )
+        '@oclif/config@^1',
+        '@oclif/command@^1',
+        '@oclif/plugin-help@^2',
+      )
       break
     case 'plugin':
       dependencies.push(
-          '@oclif/command@^1',
-          '@oclif/config@^1',
-        )
+        '@oclif/command@^1',
+        '@oclif/config@^1',
+      )
       devDependencies.push(
-          '@oclif/dev-cli@^1',
-          '@oclif/plugin-help@^2',
-          'globby@^8',
-        )
+        '@oclif/dev-cli@^1',
+        '@oclif/plugin-help@^2',
+        'globby@^8',
+      )
       break
     case 'sfdx-plugin':
       dependencies.push(
         '@oclif/command@1',
         '@oclif/config@1',
         '@oclif/errors@1',
-        '@salesforce/command@0.1.6',
+        '@salesforce/command@0.2.4',
       )
       devDependencies.push(
-        '@oclif/dev-cli@1',
-        '@oclif/plugin-help@1',
-        '@types/jsforce@1.8.13',
-        'globby@8',
-        '@salesforce/dev-config@1.1.0',
+        '@oclif/dev-cli@^1',
+        '@oclif/plugin-help@^2',
+        'globby@^8',
+        '@salesforce/dev-config@1.1.4',
         'sinon@5',
       )
       break

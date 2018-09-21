@@ -279,7 +279,7 @@ class App extends Generator {
     }
 
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.prepack = nps.series('oclif-dev manifest', 'oclif-dev readme', 'npm shrinkwrap')
+      this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b', 'oclif-dev manifest', 'oclif-dev readme', 'npm shrinkwrap')
       this.pjson.scripts.postpack = `${rmf} oclif.manifest.json npm-shrinkwrap.json`
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
       this.pjson.files.push('/oclif.manifest.json')
@@ -287,6 +287,7 @@ class App extends Generator {
       if (this.type === 'sfdx-plugin') {
         this.pjson.files.push('/messages')
         this.pjson.scripts.prepare = this.pjson.scripts.prepack
+        delete this.pjson.scripts.prepack
       }
     }
     if (this.type === 'plugin' && hasYarn) {

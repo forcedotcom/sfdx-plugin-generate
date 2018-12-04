@@ -457,7 +457,8 @@ class App extends Generator {
         '@oclif/command@1',
         '@oclif/config@1',
         '@oclif/errors@1',
-        '@salesforce/command@0.2.5',
+        '@salesforce/command@^1.0.1',
+        '@salesforce/core@^1.0.1'
       )
       devDependencies.push(
         '@oclif/dev-cli@^1',

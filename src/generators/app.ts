@@ -464,7 +464,7 @@ class App extends Generator {
         '@oclif/dev-cli@^1',
         '@oclif/plugin-help@^2',
         'globby@^8',
-        '@salesforce/dev-config@1.1.4',
+        '@salesforce/dev-config@^1.1.4',
         'sinon@5',
       )
       break

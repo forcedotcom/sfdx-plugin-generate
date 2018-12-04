@@ -1,7 +1,3 @@
-# ReadMe updates for Repos
-
-# [forcedotcom](https://github.com/forcedotcom)/[sfdx-plugin-generate](https://github.com/forcedotcom/sfdx-plugin-generate)
-
 # Description
 
 This is the generator plugin for building plugins for the Salesforce CLI. The generated sfdx plugin and command are built on top of the [oclif cli framework](https://github.com/oclif/oclif). A plug-in adds functionality to Salesforce CLI. Some plug-ins are provided by Salesforce and are installed by default when you install the CLI. Some plug-ins, built by Salesforce and others, you install. When you have a requirement that an existing plug-in doesn’t meet, you can build your own using Node.js.
@@ -11,11 +7,12 @@ This is the generator plugin for building plugins for the Salesforce CLI. The ge
 
 ## Check Your Salesforce CLI Version
 
-Starting with Salesforce CLI version 6.7.1, the plug-in generator is offered as a core plugin and can be used out of the box. To check your Salesforce CLI version:
+Starting with Salesforce CLI version 6.8.2, the plug-in generator is offered as a core plugin and can be used out of the box. To check your Salesforce CLI version:
 
 
 ```
 $ sfdx --version
+sfdx-cli/6.42.0-ae478b3cb8 (darwin-x64) node-v8.9.4
 ```
 
 ## Generate a Salesforce CLI Plugin
@@ -25,8 +22,8 @@ Follow the **[Salesforce CLI Plug-In Developer Guide](https://developer.salesfor
 
 # Related Docs and Repositories
 
-* @forcedotcom/cli-packages - Lerna repository containing Salesforce CLI command api.
-* @forcedotcom/sfdx-core - API for working with a Salesforce DX project and managing Salesforce orgs
+* [@forcedotcom/cli-packages](https://github.com/forcedotcom/cli-packages) - Lerna repository containing Salesforce CLI command api.
+* [@forcedotcom/sfdx-core](https://github.com/forcedotcom/sfdx-core) - API for working with a Salesforce DX project and managing Salesforce orgs
 * [@oclif/command](https://github.com/oclif/command) - Base command for oclif; this can be used directly without the generator
 * [@oclif/config](https://github.com/oclif/config) - Most of the core setup for oclif lives here
 * [@oclif/errors](https://github.com/oclif/errors) - Renders and logs errors from commands

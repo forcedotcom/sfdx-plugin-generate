@@ -2,6 +2,8 @@
 
 This is the generator plugin for building plugins for the Salesforce CLI. The generated sfdx plugin and command are built on top of the [oclif cli framework](https://github.com/oclif/oclif). A plug-in adds functionality to Salesforce CLI. Some plug-ins are provided by Salesforce and are installed by default when you install the CLI. Some plug-ins, built by Salesforce and others, you install. When you have a requirement that an existing plug-in doesn’t meet, you can build your own using Node.js.
 
+**Note:** As of @salesforce/command@1.3.0, if you want to override the static usage property you must use a getter. For consistency, we recommend keeping the standard behavior rather than overriding the usage property.
+
 
 # Usage
 

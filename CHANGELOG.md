@@ -1,3 +1,80 @@
+## [1.13.1](https://github.com/oclif/oclif/compare/v1.13.0...v1.13.1) (2019-03-24)
+
+
+### Bug Fixes
+
+* test on node 10 ([cf10522](https://github.com/oclif/oclif/commit/cf10522))
+
+# [1.13.0](https://github.com/oclif/oclif/compare/v1.12.10...v1.13.0) (2019-03-17)
+
+
+### Features
+
+* Added Travis CI Support ([#214](https://github.com/oclif/oclif/issues/214)) ([5a9d300](https://github.com/oclif/oclif/commit/5a9d300))
+
+## [1.12.10](https://github.com/oclif/oclif/compare/v1.12.9...v1.12.10) (2019-02-12)
+
+
+### Bug Fixes
+
+* don't include mocha types on no mocha ([#206](https://github.com/oclif/oclif/issues/206)) ([505c43b](https://github.com/oclif/oclif/commit/505c43b))
+
+## [1.12.9](https://github.com/oclif/oclif/compare/v1.12.8...v1.12.9) (2019-02-11)
+
+
+### Bug Fixes
+
+* typescript@3.3 ([6ff355f](https://github.com/oclif/oclif/commit/6ff355f))
+
+## [1.12.8](https://github.com/oclif/oclif/compare/v1.12.7...v1.12.8) (2018-12-17)
+
+
+### Bug Fixes
+
+* typescript@3.2 ([#197](https://github.com/oclif/oclif/issues/197)) ([07013c8](https://github.com/oclif/oclif/commit/07013c8))
+
+## [1.12.7](https://github.com/oclif/oclif/compare/v1.12.6...v1.12.7) (2018-12-03)
+
+
+### Bug Fixes
+
+* updated deps ([ffe8868](https://github.com/oclif/oclif/commit/ffe8868))
+
+## [1.12.6](https://github.com/oclif/oclif/compare/v1.12.5...v1.12.6) (2018-11-14)
+
+
+### Bug Fixes
+
+* updated deps ([2ff77ed](https://github.com/oclif/oclif/commit/2ff77ed))
+
+## [1.12.5](https://github.com/oclif/oclif/compare/v1.12.4...v1.12.5) (2018-10-16)
+
+
+### Bug Fixes
+
+* default to not using shrinkwrap ([902c350](https://github.com/oclif/oclif/commit/902c350))
+
+## [1.12.4](https://github.com/oclif/oclif/compare/v1.12.3...v1.12.4) (2018-10-13)
+
+
+### Bug Fixes
+
+* remove greenkeeper badge ([9690390](https://github.com/oclif/oclif/commit/9690390))
+
+## [1.12.3](https://github.com/oclif/oclif/compare/v1.12.2...v1.12.3) (2018-10-13)
+
+
+### Bug Fixes
+
+* prepack ([85c0a36](https://github.com/oclif/oclif/commit/85c0a36))
+
+## [1.12.2](https://github.com/oclif/oclif/compare/v1.12.1...v1.12.2) (2018-10-13)
+
+
+### Bug Fixes
+
+* shrinkwrap ([7f86997](https://github.com/oclif/oclif/commit/7f86997))
+
 ## [1.12.1](https://github.com/oclif/oclif/compare/v1.12.0...v1.12.1) (2018-09-15)
 
 

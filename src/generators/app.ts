@@ -292,8 +292,6 @@ class App extends Generator {
       this.pjson.files.push('/npm-shrinkwrap.json')
       if (this.type === 'sfdx-plugin') {
         this.pjson.files.push('/messages')
-        this.pjson.scripts.prepare = this.pjson.scripts.prepack
-        delete this.pjson.scripts.prepack
       }
     }
     if (this.type === 'plugin' && hasYarn) {
@@ -464,18 +462,17 @@ class App extends Generator {
       break
     case 'sfdx-plugin':
       dependencies.push(
-        '@oclif/command@1',
-        '@oclif/config@1',
-        '@oclif/errors@1',
-        '@salesforce/command@^1.0.1',
-        '@salesforce/core@^1.0.1'
+        '@oclif/command@^1',
+        '@oclif/config@^1',
+        '@oclif/errors@^1',
+        '@salesforce/command@^1.4.1',
+        '@salesforce/core@^1.3.2'
       )
       devDependencies.push(
         '@oclif/dev-cli@^1',
         '@oclif/plugin-help@^2',
         'globby@^8',
-        '@salesforce/dev-config@^1.1.4',
-        'sinon@5',
+        '@salesforce/dev-config@1.4.1'
       )
       break
     case 'multi':
@@ -501,7 +498,7 @@ class App extends Generator {
     }
     if (this.ts) {
       dependencies.push(
-        'tslib@1',
+        'tslib@^1',
       )
       devDependencies.push(
         '@types/node@^10',
@@ -516,7 +513,6 @@ class App extends Generator {
       }
       if (this.tslint) {
         devDependencies.push(
-          '@oclif/tslint@^3',
           'tslint@^5',
         )
       }

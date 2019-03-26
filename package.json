@@ -68,7 +68,7 @@
         "description": "add/remove/create CLI plug-ins"
       }
     },
-    "commands": "./lib/commands",
+    "commands": "./lib/sfdxcommands",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-warn-if-update-available",

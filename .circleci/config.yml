@@ -112,11 +112,5 @@ workflows:
                 - master
     jobs:
       - lint
-      - node-latest-base: {requires: [lint] }
-      - node-latest-single: {requires: [lint] }
-      - node-latest-multi: {requires: [lint] }
       - node-latest-plugins-generate: {requires: [lint] }
-      - node-8-base: {requires: [lint] }
-      - node-8-single: {requires: [lint] }
-      - node-8-multi: {requires: [lint] }
       - node-8-plugins-generate: {requires: [lint] }

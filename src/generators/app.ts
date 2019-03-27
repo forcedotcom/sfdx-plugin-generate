@@ -48,6 +48,7 @@ class App extends Generator {
     tslint: boolean
     eslint: boolean
     yarn: boolean
+    travisci: boolean
   }
   args!: {[k: string]: string}
   type: 'single' | 'multi' | 'plugin' | 'base' | 'sfdx-plugin'
@@ -72,6 +73,7 @@ class App extends Generator {
       circleci: boolean
       appveyor: boolean
       codecov: boolean
+      travisci: boolean
     }
   }
   mocha!: boolean
@@ -82,6 +84,7 @@ class App extends Generator {
   tslint!: boolean
   eslint!: boolean
   yarn!: boolean
+  travisci!: boolean
   get _ext() { return this.ts ? 'ts' : 'js' }
   get _bin() {
     let bin = this.pjson.oclif && (this.pjson.oclif.bin || this.pjson.oclif.dirname) || this.pjson.name
@@ -105,6 +108,7 @@ class App extends Generator {
       tslint: opts.options.includes('tslint'),
       eslint: opts.options.includes('eslint'),
       yarn: opts.options.includes('yarn') || hasYarn,
+      travisci: opts.options.includes('travisci'),
     }
   }
 
@@ -226,6 +230,7 @@ class App extends Generator {
             {name: 'circleci (continuous integration/delivery service)', value: 'circleci'},
             {name: 'appveyor (continuous integration/delivery service)', value: 'appveyor'},
             {name: 'codecov (online code coverage report viewer)', value: 'codecov'},
+            {name: 'travisci (continuous integration/delivery service)', value: 'travisci'},
           ],
           filter: ((arr: string[]) => _.keyBy(arr)) as any,
           when: this.type !== 'sfdx-plugin'
@@ -242,7 +247,8 @@ class App extends Generator {
       circleci: true,
       appveyor: true,
       codecov: true,
-      eslint: false
+      eslint: false,
+      travisci: false
     }
     this.options = this.type === 'sfdx-plugin' ? sfdxPluginOptions : this.options
 
@@ -254,6 +260,7 @@ class App extends Generator {
     this.appveyor = this.options.appveyor
     this.codecov = this.options.codecov
     this.eslint = this.options.eslint
+    this.travisci = this.options.travisci
 
     this.pjson.name = this.answers.name || defaults.name
     this.pjson.description = this.answers.description || defaults.description
@@ -277,17 +284,14 @@ class App extends Generator {
     if (this.ts) {
       this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b')
     }
-
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b', 'oclif-dev manifest', 'oclif-dev readme', 'npm shrinkwrap')
-      this.pjson.scripts.postpack = `${rmf} oclif.manifest.json npm-shrinkwrap.json`
+      this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepack, 'oclif-dev manifest', 'oclif-dev readme')
+      this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
       this.pjson.files.push('/oclif.manifest.json')
       this.pjson.files.push('/npm-shrinkwrap.json')
       if (this.type === 'sfdx-plugin') {
         this.pjson.files.push('/messages')
-        this.pjson.scripts.prepare = this.pjson.scripts.prepack
-        delete this.pjson.scripts.prepack
       }
     }
     if (this.type === 'plugin' && hasYarn) {
@@ -401,6 +405,10 @@ class App extends Generator {
     if (this.appveyor) {
       this.fs.copyTpl(this.templatePath('appveyor.yml.ejs'), this.destinationPath('appveyor.yml'), this)
     }
+    if (this.travisci) {
+      this.fs.copyTpl(this.templatePath('travis.yml.ejs'), this.destinationPath('.travis.yml'), this)
+    }
+
     this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
 
     if (this.pjson.license === 'MIT' && (this.pjson.repository.startsWith('oclif') || this.pjson.repository.startsWith('heroku'))) {
@@ -455,18 +463,17 @@ class App extends Generator {
       break
     case 'sfdx-plugin':
       dependencies.push(
-        '@oclif/command@1',
-        '@oclif/config@1',
-        '@oclif/errors@1',
-        '@salesforce/command@^1.0.1',
-        '@salesforce/core@^1.0.1'
+        '@oclif/command@^1',
+        '@oclif/config@^1',
+        '@oclif/errors@^1',
+        '@salesforce/command@^1.4.1',
+        '@salesforce/core@^1.3.2'
       )
       devDependencies.push(
         '@oclif/dev-cli@^1',
         '@oclif/plugin-help@^2',
         'globby@^8',
-        '@salesforce/dev-config@^1.1.4',
-        'sinon@5',
+        '@salesforce/dev-config@1.4.1'
       )
       break
     case 'multi':
@@ -492,25 +499,28 @@ class App extends Generator {
     }
     if (this.ts) {
       dependencies.push(
-        'tslib@1',
+        'tslib@^1',
       )
       devDependencies.push(
-        '@types/chai@^4',
-        '@types/mocha@^5',
         '@types/node@^10',
-        'typescript@^3.0',
-        'ts-node@^7',
+        'typescript@~3.3',
+        'ts-node@^8',
       )
-      if (this.tslint && this.type !== 'sfdx-plugin') {
+      if (this.mocha) {
         devDependencies.push(
-          '@oclif/tslint@^3',
+          '@types/chai@^4',
+          '@types/mocha@^5',
+        )
+      }
+      if (this.tslint) {
+        devDependencies.push(
           'tslint@^5',
         )
       }
     }
     if (this.eslint) {
       devDependencies.push(
-        'eslint@^5.5',
+        'eslint@^5.13',
         'eslint-config-oclif@^3.1',
       )
     }
@@ -523,7 +533,11 @@ class App extends Generator {
     return Promise.all([
       install(devDependencies, {...yarnOpts, ...dev, ignoreScripts: true}),
       install(dependencies, {...yarnOpts, ...save}),
-    ])
+    ]).then(() => {
+      // if (!this.yarn) {
+      //   return this.spawnCommand('npm', ['shrinkwrap'])
+      // }
+    })
   }
 
   end() {

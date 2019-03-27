@@ -17,34 +17,6 @@ jobs:
       - run: yarn add -D mocha-junit-reporter@1
       - run: yarn exec nps lint
       - persist_to_workspace: {root: node_modules,  paths: ["*"]}
-  node-latest-multi:
-    <<: *lint
-    steps: &multi_steps
-      - checkout
-      - restore_cache: *restore_cache
-      - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_git
-      - run: yarn exec nps test.multi
-      - store_test_results: &store_test_results
-          path: ~/cli/reports
-  node-latest-base:
-    <<: *lint
-    steps: &base_steps
-      - checkout
-      - restore_cache: *restore_cache
-      - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_git
-      - run: yarn exec nps test.base
-      - store_test_results: *store_test_results
-  node-latest-single:
-    <<: *lint
-    steps: &single_steps
-      - checkout
-      - restore_cache: *restore_cache
-      - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_git
-      - run: yarn exec nps test.single
-      - store_test_results: *store_test_results
   node-latest-plugins-generate:
     <<: *lint
     steps: &plugins_generate_steps
@@ -53,20 +25,12 @@ jobs:
       - attach_workspace: {at: node_modules}
       - run: .circleci/setup_git
       - run: yarn exec nps test.plugins-generate
-      - store_test_results: *store_test_results
-  node-8-base: &node_8
+      - store_test_results: &store_test_results
+          path: ~/cli/reports
+  node-8-plugins-generate:
     <<: *lint
     docker:
       - image: node:8
-    steps: *base_steps
-  node-8-single:
-    <<: *node_8
-    steps: *single_steps
-  node-8-multi:
-    <<: *node_8
-    steps: *multi_steps
-  node-8-plugins-generate:
-    <<: *node_8
     steps: *plugins_generate_steps
 
   cache:
@@ -97,9 +61,6 @@ workflows:
   oclif:
     jobs:
       - lint
-      - node-latest-base: {requires: [lint] }
-      - node-latest-single: {requires: [lint] }
-      - node-latest-multi: {requires: [lint] }
       - node-latest-plugins-generate: {requires: [lint] }
 
   nightly:

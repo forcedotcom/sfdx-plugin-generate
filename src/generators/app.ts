@@ -502,7 +502,7 @@ class App extends Generator {
       )
       devDependencies.push(
         '@types/node@^10',
-        'typescript@^3.3',
+        'typescript@~3.3',
         'ts-node@^8',
       )
       if (this.mocha) {

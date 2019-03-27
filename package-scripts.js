@@ -15,7 +15,7 @@ sh.set('-e')
 
 setColors(['dim'])
 
-const testTypes = ['base', 'single', 'multi', 'plugins-generate']
+const testTypes = ['plugins-generate']
 const tests = testTypes.map(cmd => {
   const {silent} = sh.config
   sh.config.silent = true

@@ -36,6 +36,7 @@ function build(type, features) {
   // sh.exec('git commit -nm init')
   // sh.exec('git checkout -B origin/master')
   process.env = npmPath.env({env: process.env})
+  sh.exec('yarn prepack')
 }
 
 module.exports = file => {

@@ -285,6 +285,7 @@ class App extends Generator {
       this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b')
     }
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
+      this.pjson.scripts.lint = 'tslint --project . --config tslint.json --format stylish'
       this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepack, 'oclif-dev manifest', 'oclif-dev readme')
       this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
@@ -636,6 +637,14 @@ class App extends Generator {
 
     if (!fs.existsSync('.vscode/launch.json')) {
       this.fs.copyTpl(this.templatePath('.vscode/launch.json'), this.destinationPath('.vscode/launch.json'), this)
+    }
+
+    if (!fs.existsSync('.vscode/settings.json')) {
+      this.fs.copyTpl(this.templatePath('.vscode/settings.json'), this.destinationPath('.vscode/settings.json'), this)
+    }
+
+    if (!fs.existsSync('.vscode/tasks.json')) {
+      this.fs.copyTpl(this.templatePath('.vscode/tasks.json'), this.destinationPath('.vscode/tasks.json'), this)
     }
   }
 

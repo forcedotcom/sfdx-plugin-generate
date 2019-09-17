@@ -16,6 +16,13 @@ install:
 <%_ } else { _%>
   - npm install
 <%_ } _%>
+
+build: off
+
+build_script:
+  - ps: Write-Host “Prepack FLS plugin”
+  - <%- yarn ? 'yarn' : 'npm' %> prepack
+
 test_script:
 <%_ if (type === 'single' || type === 'multi') { _%>
   - .\bin\run --version
@@ -32,6 +39,3 @@ after_test:
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
       bash codecov.sh
 <% } %>
-
-build: off
-

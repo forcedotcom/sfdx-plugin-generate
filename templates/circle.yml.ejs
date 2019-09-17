@@ -21,6 +21,9 @@ jobs:
       - run: ./bin/run --help
       <%_ } _%>
       - run:
+          name: Build plugin
+          command: <%- yarn ? 'yarn' : 'npm' %> prepack
+      - run:
           name: Testing
           command: <%- yarn ? 'yarn' : 'npm' %> test
       <%_ if (mocha && codecov) { _%>

@@ -58,7 +58,7 @@ $ git push origin master
 
 - Develop features and bug fixes in _topic_ branches.
 - _Topic_ branches can live in forks (for external contributors) or within this repository (for committers).
-  \*\* When creating _topic_ branches in this repository please prefix with `<developer-name>/`.
+  \*\* When creating _topic_ branches in this repository please prefix with `<developer-name>/`
 
 ### Merging Pull Requests
 

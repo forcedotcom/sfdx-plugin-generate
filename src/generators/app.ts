@@ -133,7 +133,12 @@ class App extends Generator {
       this.destinationRoot(path.resolve(this.path))
       process.chdir(this.destinationRoot())
     }
-    this.githubUser = await this.user.github.username().catch(debug)
+    try {
+      this.githubUser = await this.user.github.username();
+    } catch (err) {
+      debug(err);
+    }
+      
     this.pjson = {
       scripts: {},
       engines: {},

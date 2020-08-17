@@ -14,7 +14,7 @@
     "@oclif/plugin-not-found": "^1.2.2",
     "@oclif/plugin-warn-if-update-available": "^1.5.4",
     "debug": "^4.1.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.20",
     "nps-utils": "^1.7.0",
     "sort-pjson": "^1.0.3",
     "tslib": "^1.9.3",

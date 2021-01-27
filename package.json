@@ -25,6 +25,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.0",
     "@oclif/tslint": "^3.1.1",
+    "@salesforce/dev-scripts": "^0.6.2",
     "@types/lodash": "^4.14.121",
     "@types/read-pkg": "^3.0.0",
     "@types/shelljs": "^0.8.3",
@@ -84,7 +85,13 @@
     "prepack": "rm -rf lib && tsc && oclif-dev manifest",
     "version": "oclif-dev readme && git add README.md",
     "test": "nps test",
-    "prepare": "rm -f .oclif.manifest.json && yarn run prepack"
+    "prepare": "rm -f .oclif.manifest.json && yarn run prepack",
+    "build": "yarn prepack"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "husky": {
+    "hooks": {
+      "commit-msg": "sf-husky-commit-msg"
+    }
+  }
 }

@@ -1,5 +1,7 @@
 ---
-version: 2
+version: 2.1
+orbs:
+  release-management: salesforce/npm-release-management@4
 jobs:
   lint: &lint
     docker:
@@ -47,21 +49,31 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
             - /usr/local/share/.config/yarn
-  release:
-    <<: *lint
-    steps:
-      - add_ssh_keys
-      - checkout
-      - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_git
-      - run: .circleci/release
 
 workflows:
   version: 2
   oclif:
     jobs:
-      - lint
+      - lint:
+          filters:
+            branches:
+              ignore: main
       - node-latest-plugins-generate: {requires: [lint] }
+
+  release:
+    jobs:
+      - lint:
+          filters:
+            branches:
+              only: main
+      - node-latest-plugins-generate:
+          requires:
+            - lint
+      - release-management/release-package:
+          sign: true
+          github-release: true
+          requires:
+            - node-latest-plugins-generate
 
   nightly:
     triggers:
@@ -70,7 +82,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
     jobs:
       - lint
       - node-latest-plugins-generate: {requires: [lint] }

@@ -1,3 +1,16 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.1.5](https://github.com/oclif/oclif/compare/v1.1.3...v1.1.5) (2021-01-28)
+
+
+### Bug Fixes
+
+* bump version to 1.1.5 ([0183801](https://github.com/oclif/oclif/commit/0183801fb9432ec70c7153f2ad3ed67fd0c9c961))
+* package.json & yarn.lock to reduce vulnerabilities ([ba015e2](https://github.com/oclif/oclif/commit/ba015e2176b511b1981291a0a5b3434620be393a))
+* package.json & yarn.lock to reduce vulnerabilities ([77f5816](https://github.com/oclif/oclif/commit/77f5816830fd47b46f4e548783e47ad925fd81f4))
+
 ## [1.13.1](https://github.com/oclif/oclif/compare/v1.13.0...v1.13.1) (2019-03-24)
 
 

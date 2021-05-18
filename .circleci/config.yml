@@ -69,7 +69,3 @@ workflows:
           github-release: true
           requires:
             - node-latest-plugins-generate
-
-    jobs:
-      - lint
-      - node-latest-plugins-generate: {requires: [lint] }

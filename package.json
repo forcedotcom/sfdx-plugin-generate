@@ -1,7 +1,7 @@
 {
   "name": "@salesforce/plugin-generator",
   "description": "create your own sfdx plugin",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "author": "Platform CLI",
   "bin": "./bin/run",
   "bugs": "https://github.com/forcedotcom/sfdx-plugin-generate/issues",

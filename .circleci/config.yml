@@ -29,11 +29,6 @@ jobs:
       - run: yarn exec nps test.plugins-generate
       - store_test_results: &store_test_results
           path: ~/cli/reports
-  node-8-plugins-generate:
-    <<: *lint
-    docker:
-      - image: node:8
-    steps: *plugins_generate_steps
 
   cache:
     <<: *lint
@@ -74,16 +69,3 @@ workflows:
           github-release: true
           requires:
             - node-latest-plugins-generate
-
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 11 * * *"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - lint
-      - node-latest-plugins-generate: {requires: [lint] }
-      - node-8-plugins-generate: {requires: [lint] }

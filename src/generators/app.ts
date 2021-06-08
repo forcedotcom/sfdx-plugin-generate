@@ -157,7 +157,7 @@ class App extends Generator {
       repository,
       ...this.pjson,
       engines: {
-        node: '>=8.0.0',
+        node: '>=12.0.0',
         ...this.pjson.engines,
       },
       options: this.options,
@@ -246,12 +246,12 @@ class App extends Generator {
     const sfdxPluginOptions = {
       typescript: true,
       mocha: true,
-      tslint: true,
+      tslint: false,
       yarn: true,
       circleci: true,
       appveyor: true,
       codecov: true,
-      eslint: false,
+      eslint: true,
       travisci: false
     }
     this.options = this.type === 'sfdx-plugin' ? sfdxPluginOptions : this.options
@@ -281,7 +281,7 @@ class App extends Generator {
       this.pjson.scripts.posttest = 'eslint .'
     }
     if (this.mocha) {
-      this.pjson.scripts.test = `nyc ${this.ts ? '--extension .ts ' : ''}mocha --forbid-only "test/**/*.test.${this._ext}"`
+      this.pjson.scripts.test = `nyc ${this.ts ? '--extension .ts --require ts-node/register ' : ''}mocha --forbid-only "test/**/*.test.${this._ext}"`
     } else {
       this.pjson.scripts.test = 'echo NO TESTS'
     }
@@ -289,7 +289,7 @@ class App extends Generator {
       this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b')
     }
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.lint = 'tslint --project . --config tslint.json --format stylish'
+      this.pjson.scripts.lint = 'eslint --ext ts src/**/*.ts test/**/.ts'
       this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepack, 'oclif-dev manifest', 'oclif-dev readme')
       this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
@@ -374,8 +374,8 @@ class App extends Generator {
 
     if (this.ts) {
       if (this.type !== 'sfdx-plugin') {
-        if (this.tslint) {
-          this.fs.copyTpl(this.templatePath('tslint.json'), this.destinationPath('tslint.json'), this)
+        if (this.eslint) {
+          this.fs.copyTpl(this.templatePath('.eslintrc.js'), this.destinationPath('.eslintrc.js'), this)
         }
         this.fs.copyTpl(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'), this)
       }
@@ -393,7 +393,7 @@ class App extends Generator {
       if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
     }
     if (this.mocha) {
-      this.fs.copyTpl(this.templatePath('test/mocha.opts'), this.destinationPath('test/mocha.opts'), this)
+      this.fs.copyTpl(this.templatePath('test/mocha.json'), this.destinationPath('test/mocha.json'), this)
     }
     if (this.fs.exists(this.destinationPath('./package.json'))) {
       fixpack(this.destinationPath('./package.json'), require('@oclif/fixpack/config.json'))
@@ -452,7 +452,7 @@ class App extends Generator {
       dependencies.push(
         '@oclif/config@^1',
         '@oclif/command@^1',
-        '@oclif/plugin-help@^2',
+        '@oclif/plugin-help@^3',
       )
       break
     case 'plugin':
@@ -462,8 +462,8 @@ class App extends Generator {
       )
       devDependencies.push(
         '@oclif/dev-cli@^1',
-        '@oclif/plugin-help@^2',
-        'globby@^8',
+        '@oclif/plugin-help@^3',
+        'globby@^11',
       )
       break
     case 'sfdx-plugin':
@@ -471,32 +471,35 @@ class App extends Generator {
         '@oclif/command@^1',
         '@oclif/config@^1',
         '@oclif/errors@^1',
-        '@salesforce/command@^2',
+        '@salesforce/command@^3',
         '@salesforce/core@^2'
       )
       devDependencies.push(
         '@oclif/dev-cli@^1',
-        '@oclif/plugin-help@^2',
-        'globby@^8',
-        '@salesforce/dev-config@1.4.1'
+        '@oclif/plugin-help@^3',
+        'globby@^11',
+        '@salesforce/dev-config@^2',
+        '@salesforce/ts-sinon@^1',
+        '@types/jsforce@^1.9.29'
       )
       break
     case 'multi':
       dependencies.push(
         '@oclif/config@^1',
         '@oclif/command@^1',
-        '@oclif/plugin-help@^2',
+        '@oclif/plugin-help@^3',
       )
       devDependencies.push(
         '@oclif/dev-cli@^1',
-        'globby@^8',
+        'globby@^11',
       )
     }
     if (this.mocha) {
       devDependencies.push(
-        'mocha@^5',
-        'nyc@^14',
+        'mocha@^8',
+        'nyc@^15',
         'chai@^4',
+        'sinon@10.0.0'
       )
       if (this.type !== 'base') devDependencies.push(
         '@oclif/test@^1',
@@ -504,27 +507,27 @@ class App extends Generator {
     }
     if (this.ts) {
       dependencies.push(
-        'tslib@^1',
+        'tslib@^2',
       )
       devDependencies.push(
-        '@types/node@^10',
-        'ts-node@^8',
+        'ts-node@^10',
+        'typescript@4'
       )
       if (this.mocha) {
         devDependencies.push(
           '@types/chai@^4',
-          '@types/mocha@^5',
+          '@types/mocha@^8',
         )
       }
       if (this.tslint) {
         devDependencies.push(
-          'tslint@^5',
+          'tslint@^6',
         )
       }
     }
     if (this.eslint) {
       devDependencies.push(
-        'eslint@^5.13',
+        'eslint@^7',
         'eslint-config-oclif@^3.1',
       )
     }
@@ -619,7 +622,7 @@ class App extends Generator {
     this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/README.md.ejs'), this.destinationPath('README.md'), this)
     this.fs.copy(this.templatePath('.images/vscodeScreenshot.png'), this.destinationPath('.images/vscodeScreenshot.png'), this)
-    this.fs.copyTpl(this.templatePath('sfdxPlugin/tslint.json'), this.destinationPath('tslint.json'), this)
+    this.fs.copyTpl(this.templatePath('sfdxPlugin/.eslintrc.js'), this.destinationPath('.eslintrc.js'), this)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/tsconfig.json'), this.destinationPath('tsconfig.json'), this)
     if (!fs.existsSync('src/commands')) {
       this.fs.copyTpl(this.templatePath(`src/sfdxCommand.${this._ext}.ejs`), this.destinationPath(`src/commands/${topic}/${sfdxExampleCommand}.${this._ext}`), {

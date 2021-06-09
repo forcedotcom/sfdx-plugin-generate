@@ -282,7 +282,8 @@ class App extends Generator {
       this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b')
     }
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.lint = 'eslint --ext ts src/**/*.ts test/**/.ts'
+      this.pjson.scripts.lint = 'eslint src/**/*.ts test/**/*.ts'
+      this.pjson.scripts.posttest = 'eslint src/**/*.ts test/**/*.ts'
       this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepack, 'oclif-dev manifest', 'oclif-dev readme')
       this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`
       this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
@@ -367,8 +368,8 @@ class App extends Generator {
 
     if (this.ts) {
       if (this.type !== 'sfdx-plugin') {
-        if (this.eslint) {
-          this.fs.copyTpl(this.templatePath('.eslintrc.js'), this.destinationPath('.eslintrc.js'), this)
+        if (this.tslint) {
+          this.fs.copyTpl(this.templatePath('tslint.json'), this.destinationPath('tslint.json'), this)
         }
         this.fs.copyTpl(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'), this)
       }
@@ -380,7 +381,7 @@ class App extends Generator {
         }
       }
     }
-    if (this.eslint) {
+    if (this.eslint && this.type !== 'sfdx-plugin') {
       this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
       const eslintignore = this._eslintignore()
       if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
@@ -472,8 +473,24 @@ class App extends Generator {
         '@oclif/plugin-help@^3',
         'globby@^11',
         '@salesforce/dev-config@^2',
+        '@salesforce/dev-scripts@^0',
+        '@salesforce/prettier-config@^0',
         '@salesforce/ts-sinon@^1',
-        '@types/jsforce@^1.9.29'
+        '@types/jsforce@^1.9.29',
+        '@typescript-eslint/eslint-plugin@^4',
+        '@typescript-eslint/parser@^4',
+        'eslint-config-prettier@^8',
+        'eslint-config-salesforce@^0',
+        'eslint-config-salesforce-license@^0',
+        'eslint-config-salesforce-typescript@^0',
+        'eslint-plugin-header@^3',
+        'eslint-plugin-import@^2',
+        'eslint-plugin-jsdoc@^35',
+        'eslint-plugin-prettier@^3',
+        'eslint-plugin-typescript@^0',
+        'husky@^4',
+        'prettier@^2',
+        'pretty-quick@^3',
       )
       break
     case 'multi':
@@ -617,6 +634,7 @@ class App extends Generator {
     this.fs.copy(this.templatePath('.images/vscodeScreenshot.png'), this.destinationPath('.images/vscodeScreenshot.png'), this)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/.eslintrc.js'), this.destinationPath('.eslintrc.js'), this)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/tsconfig.json'), this.destinationPath('tsconfig.json'), this)
+    this.fs.copyTpl(this.templatePath('sfdxPlugin/.prettierrc.json'), this.destinationPath('.prettierrc.json'), this)
     if (!fs.existsSync('src/commands')) {
       this.fs.copyTpl(this.templatePath(`src/sfdxCommand.${this._ext}.ejs`), this.destinationPath(`src/commands/${topic}/${sfdxExampleCommand}.${this._ext}`), {
         ...opts,

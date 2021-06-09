@@ -6,5 +6,6 @@
  */
 
 module.exports = {
-  extends: ["eslint-config-salesforce", "eslint-config-salesforce-license"],
+  extends: ["eslint-config-salesforce-typescript"],
+  parser: "@typescript-eslint/parser",
 };

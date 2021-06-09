@@ -20,17 +20,13 @@ function generate(args) {
 }
 
 function build(type, features) {
-  let options = ''
-  if (features === 'everything') options = '--options=yarn,typescript,tslint,mocha'
-  if (features === 'typescript') options = '--options=yarn,typescript'
-  if (features === 'mocha') options = '--options=yarn,mocha'
-  let dir = CI ? tmp.tmpNameSync() : path.join(__dirname, '../tmp')
+  let dir = tmp.tmpNameSync()
   // replace colon with dash because running commands
   // inside of a directory with a colon in the name causes errors
   dir = path.join(dir, type, features)
   sh.rm('-rf', dir)
   const cmd = type.replace('-', ':')
-  generate(`${cmd} ${dir} --defaults ${options}`)
+  generate(`${cmd} ${dir} --defaults`)
   sh.cd(dir)
   // sh.exec('git add .')
   // sh.exec('git commit -nm init')
@@ -47,6 +43,7 @@ module.exports = file => {
   describe(cmd, () => {
     fancy
     .retries(CI ? 1 : 0)
+    .timeout(600000)
     .do(() => {
       switch (cmd) {
       case 'base':

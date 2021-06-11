@@ -481,7 +481,6 @@ class App extends Generator {
         '@typescript-eslint/parser@^4',
         'eslint-config-prettier@^8',
         'eslint-config-salesforce@^0',
-        'eslint-config-salesforce-license@^0',
         'eslint-config-salesforce-typescript@^0',
         'eslint-plugin-header@^3',
         'eslint-plugin-import@^2',

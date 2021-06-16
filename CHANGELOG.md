@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.8](https://github.com/oclif/oclif/compare/v1.1.7...v1.1.8) (2021-06-16)
+
+
+### Bug Fixes
+
+* apply needed changes to deps and structure ([#91](https://github.com/oclif/oclif/issues/91)) ([3175cc0](https://github.com/oclif/oclif/commit/3175cc0fb9757d7775f4d2e1d76c5d4af3d94332))
+
 ### [1.1.7](https://github.com/oclif/oclif/compare/v1.1.6...v1.1.7) (2021-05-18)
 
 

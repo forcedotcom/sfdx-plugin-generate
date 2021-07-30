@@ -648,8 +648,8 @@ class App extends Generator {
         {...opts, name: sfdxExampleCommand, topic})
     }
 
-    if (!fs.existsSync('messages/messages.json')) {
-      this.fs.copyTpl(this.templatePath('messages/messages.json'), this.destinationPath(`messages/${sfdxExampleCommand}.json`), this)
+    if (!fs.existsSync('messages/messages.js')) {
+      this.fs.copyTpl(this.templatePath('messages/messages.js'), this.destinationPath(`messages/${sfdxExampleCommand}.js`), this)
     }
 
     if (!fs.existsSync('.vscode/launch.json')) {

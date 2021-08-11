@@ -2,5 +2,9 @@
   "commandDescription": "print a greeting and your org IDs",
   "nameFlagDescription": "name to print",
   "forceFlagDescription": "example boolean flag",
-  "errorNoOrgResults": "No results found for the org '%s'."
+  "errorNoOrgResults": "No results found for the org '%s'.",
+  "examples": [
+    "sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com",
+    "sfdx hello:org --name myname --targetusername myOrg@example.com"
+  ]
 }

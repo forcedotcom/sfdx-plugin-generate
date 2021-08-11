@@ -4,6 +4,7 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+import * as os from 'os';
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages, SfdxError } from '@salesforce/core';
 import { AnyJson } from '@salesforce/ts-types';
@@ -19,15 +20,7 @@ const messages = Messages.loadMessages('<%- pluginName %>', '<%- commandName %>'
 export default class <%- klass %> extends SfdxCommand {
   public static description = messages.getMessage('commandDescription');
 
-  public static examples = [
-    `$ sfdx <%- topicName %>:<%- commandName %> --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
-Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
-My hub org id is: 00Dxx000000001234
-  `,
-    `$ sfdx <%- topicName %>:<%- commandName %> --name myname --targetusername myOrg@example.com
-Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
-  `,
-  ];
+  public static examples = messages.getMessage('examples').split(os.EOL);
 
   public static args = [{ name: 'file' }];
 

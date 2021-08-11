@@ -280,6 +280,7 @@ class App extends Generator {
     }
     if (this.ts) {
       this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b')
+      this.pjson.scripts.build = 'tsc -p .'
     }
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
       this.pjson.scripts.lint = 'eslint src/**/*.ts test/**/*.ts'

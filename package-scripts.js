@@ -16,6 +16,14 @@ const pkgManager = hasYarn ? 'yarn' : 'npm run'
 
 sh.set('-e')
 
+const objectValuesToString = o => {
+  if (_.isString(o)) {
+    return o
+  }
+  const m = Object.entries(o).map(([, v]) => v)
+  return m.join(' && ')
+}
+
 const testTypes = ['plugins-generate']
 const tests = testTypes.map(cmd => {
   const {silent} = sh.config
@@ -35,10 +43,10 @@ const tests = testTypes.map(cmd => {
     tests.map(t => t[1].value()).join(' && ') :
     tests.fromPairs().value()
   if (process.env.CIRCLECI) {
-    tests = `${pkgManager} mkdirp reports && ${_.isArray(tests) ? tests.join(' && ') : tests}`
+    tests = `${pkgManager} mkdirp reports && ${objectValuesToString(tests)}`
   }
   sh.config.silent = silent
-  return [cmd, `${pkgManager} build && ${_.isArray(tests) ? tests.join(' && ') : tests}`]
+  return [cmd, `${pkgManager} build && ${objectValuesToString(tests)}`]
 })
 
 module.exports = {

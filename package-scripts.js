@@ -35,10 +35,10 @@ const tests = testTypes.map(cmd => {
     tests.map(t => t[1].value()).join(' && ') :
     tests.fromPairs().value()
   if (process.env.CIRCLECI) {
-    tests = `${pkgManager} mkdirp reports && ${tests}`
+    tests = `${pkgManager} mkdirp reports && ${_.isArray(tests) ? tests.join(' && ') : tests}`
   }
   sh.config.silent = silent
-  return [cmd, `${pkgManager} build && ${tests}`]
+  return [cmd, `${pkgManager} build && ${_.isArray(tests) ? tests.join(' && ') : tests}`]
 })
 
 module.exports = {

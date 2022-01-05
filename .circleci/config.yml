@@ -53,7 +53,7 @@ workflows:
           filters:
             branches:
               ignore: main
-      - node-latest-plugins-generate: {requires: [lint] }
+      - node-latest-plugins-generate-test: {requires: [lint] }
 
   release:
     jobs:
@@ -61,7 +61,7 @@ workflows:
           filters:
             branches:
               only: main
-      - node-latest-plugins-generate:
+      - node-latest-plugins-generate-test:
           requires:
             - lint
       - release-management/release-package:

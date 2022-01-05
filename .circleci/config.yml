@@ -68,4 +68,4 @@ workflows:
           sign: true
           github-release: true
           requires:
-            - node-latest-plugins-generate
+            - node-latest-plugins-generate-test

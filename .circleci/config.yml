@@ -19,7 +19,7 @@ jobs:
       - run: yarn add -D mocha-junit-reporter@1
       - run: yarn exec nps lint
       - persist_to_workspace: {root: node_modules,  paths: ["*"]}
-  node-latest-plugins-generate:
+  node-latest-plugins-generate-test:
     <<: *lint
     steps: &plugins_generate_steps
       - checkout

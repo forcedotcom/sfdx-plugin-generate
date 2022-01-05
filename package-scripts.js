@@ -27,8 +27,8 @@ const tests = testTypes.map(cmd => {
   .map(t => [t.split('.')[0], path.join(base, t)])
   .map(([t, s]) => {
     const mochaString = process.env.CIRCLECI ? `MOCHA_FILE=reports/mocha-${t}.xml ${mocha} --reporter mocha-junit-reporter ${s}` : `${mocha} ${s}`
-    const concurretlyString = 'concurrently --kill-others-on-fail --prefix-colors "dim" --prefix "[{name}]" --names "basic"'
-    return [t, `${pkgManager} ${concurretlyString} ${mochaString}`]
+    const concurretlyString = 'node node_modules/concurrently/dist/bin/concurrently.js --kill-others-on-fail --prefix-colors "dim" --prefix "[{name}]" --names "basic"'
+    return [t, `${concurretlyString} ${mochaString}`]
   })
   sh.popd()
   tests = process.env.TEST_SERIES === '1' ?
@@ -45,7 +45,7 @@ module.exports = {
   scripts: {
     build: 'rm -rf lib && tsc',
     lint: {
-      default: 'concurrently --kill-others-on-fail --prefix-colors "dim,dim,dim" --prefix "[{name}]" --names "lint.eslint, lint.tsc, lint.tslint" \'nps lint.eslint\' \'nps lint.tsc\' \'nps lint.tslint\'',
+      default: 'node node_modules/concurrently/dist/bin/concurrently.js --kill-others-on-fail --prefix-colors "dim,dim,dim" --prefix "[{name}]" --names "lint.eslint, lint.tsc, lint.tslint" \'nps lint.eslint\' \'nps lint.tsc\' \'nps lint.tslint\'',
       eslint: script('eslint .', 'lint js files'),
       tsc: script('tsc --noEmit', 'syntax check with tsc'),
       tslint: script('tslint -p .', 'lint ts files'),

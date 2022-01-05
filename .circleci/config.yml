@@ -17,6 +17,7 @@ jobs:
             - v5-{{checksum ".circleci/config.yml"}}
             - v5
       - run: yarn add -D mocha-junit-reporter@1
+      - run: yarn install
       - run: yarn exec nps lint
       - persist_to_workspace: {root: node_modules,  paths: ["*"]}
   node-latest-plugins-generate:

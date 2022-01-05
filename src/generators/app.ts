@@ -8,7 +8,6 @@ import * as path from 'path'
 import * as Generator from 'yeoman-generator'
 import yosay = require('yosay')
 
-const nps = require('nps-utils')
 const sortPjson = require('sort-pjson')
 const fixpack = require('@oclif/fixpack')
 const debug = require('debug')('generator-oclif')
@@ -279,15 +278,15 @@ class App extends Generator {
       this.pjson.scripts.test = 'echo NO TESTS'
     }
     if (this.ts) {
-      this.pjson.scripts.prepack = nps.series(`${rmrf} lib`, 'tsc -b')
+      this.pjson.scripts.prepack = `${rmrf} lib && tsc -b`
       this.pjson.scripts.build = 'tsc -p .'
     }
     if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
       this.pjson.scripts.lint = 'eslint src/**/*.ts test/**/*.ts'
       this.pjson.scripts.posttest = 'eslint src/**/*.ts test/**/*.ts'
-      this.pjson.scripts.prepack = nps.series(this.pjson.scripts.prepack, 'oclif-dev manifest', 'oclif-dev readme')
+      this.pjson.scripts.prepack = `${this.pjson.scripts.prepack} && oclif-dev manifest && oclif-dev readme`
       this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`
-      this.pjson.scripts.version = nps.series('oclif-dev readme', 'git add README.md')
+      this.pjson.scripts.version = 'oclif-dev readme && git add README.md'
       this.pjson.files.push('/oclif.manifest.json')
       this.pjson.files.push('/npm-shrinkwrap.json')
       if (this.type === 'sfdx-plugin') {
@@ -466,7 +465,7 @@ class App extends Generator {
         '@oclif/command@^1',
         '@oclif/config@^1',
         '@oclif/errors@^1',
-        '@salesforce/command@^3',
+        '@salesforce/command@^4',
         '@salesforce/core@^2'
       )
       devDependencies.push(

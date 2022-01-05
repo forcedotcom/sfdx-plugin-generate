@@ -36,7 +36,7 @@ const tests = testTypes.map(cmd => {
   .map(([t, s]) => {
     const mochaString = process.env.CIRCLECI ? `MOCHA_FILE=reports/mocha-${t}.xml ${mocha} --reporter mocha-junit-reporter ${s}` : `${mocha} ${s}`
     const concurretlyString = 'node node_modules/concurrently/dist/bin/concurrently.js --kill-others-on-fail --prefix-colors "dim" --prefix "[{name}]" --names "basic"'
-    return [t, `${concurretlyString} ${mochaString}`]
+    return [t, `${concurretlyString} "${mochaString}"`]
   })
   sh.popd()
   tests = process.env.TEST_SERIES === '1' ?

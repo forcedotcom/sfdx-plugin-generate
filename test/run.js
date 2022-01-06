@@ -43,7 +43,7 @@ module.exports = file => {
   describe(cmd, () => {
     fancy
     .retries(CI ? 1 : 0)
-    .timeout(600000)
+    .timeout(600_000)
     .do(() => {
       switch (cmd) {
       case 'base':

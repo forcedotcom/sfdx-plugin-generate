@@ -10,7 +10,7 @@ let hasYarn = false
 try {
   execSync('yarn -v', {stdio: 'ignore'})
   hasYarn = true
-} catch (error) {}
+} catch {}
 
 const pkgManager = hasYarn ? 'yarn' : 'npm run'
 
@@ -20,6 +20,7 @@ const objectValuesToString = o => {
   if (_.isString(o)) {
     return o
   }
+
   const m = Object.entries(o).map(([, v]) => v)
   return m.join(' && ')
 }
@@ -45,6 +46,7 @@ const tests = testTypes.map(cmd => {
   if (process.env.CIRCLECI) {
     tests = `${pkgManager} mkdirp reports && ${objectValuesToString(tests)}`
   }
+
   sh.config.silent = silent
   return [cmd, `${pkgManager} build && ${objectValuesToString(tests)}`]
 })
@@ -53,14 +55,14 @@ module.exports = {
   scripts: {
     build: 'rm -rf lib && tsc',
     lint: {
-      default: 'node node_modules/concurrently/dist/bin/concurrently.js --kill-others-on-fail --prefix-colors "dim,dim,dim" --prefix "[{name}]" --names "lint.eslint, lint.tsc, lint.tslint" \'nps lint.eslint\' \'nps lint.tsc\' \'nps lint.tslint\'',
+      default: 'node node_modules/concurrently/dist/bin/concurrently.js --kill-others-on-fail --prefix-colors "dim,dim,dim" --prefix "[{name}]" --names "lint.eslint, lint.tsc" \'nps lint.eslint\' \'nps lint.tsc\'',
       eslint: script('eslint .', 'lint js files'),
       tsc: script('tsc --noEmit', 'syntax check with tsc'),
       tslint: script('tslint -p .', 'lint ts files'),
     },
     test: Object.assign({
       default: testTypes.map(t => `test.${t}`).join(' && '),
-    }, _.fromPairs(tests)),
+    }, Object.fromEntries(tests)),
   },
 }
 

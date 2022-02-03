@@ -20,8 +20,8 @@
     "nps-utils": "^1.7.0",
     "sort-pjson": "^1.0.3",
     "tslib": "^2.2.0",
-    "yeoman-environment": "2.4.0",
-    "yeoman-generator": "4.0.1",
+    "yeoman-environment": "^2.4.0",
+    "yeoman-generator": "^4.0.1",
     "yosay": "^2.0.2"
   },
   "devDependencies": {

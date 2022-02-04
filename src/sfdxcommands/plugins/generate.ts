@@ -9,7 +9,7 @@ export default class Generate extends Base {
   }
 
   static args = [
-    {name: 'path', required: false}
+    {name: 'path', required: false},
   ]
 
   static description = 'create a new sfdx-cli plugin'
@@ -23,7 +23,7 @@ export default class Generate extends Base {
       path: args.path,
       defaults: flags.defaults,
       force: flags.force,
-      options: []
+      options: [],
     })
   }
 }

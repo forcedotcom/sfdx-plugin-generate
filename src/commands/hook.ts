@@ -18,8 +18,9 @@ export default abstract class HookCommand extends Base {
     force: flags.boolean({description: 'overwrite existing files'}),
     event: flags.string({description: 'event to run hook on', default: 'init'}),
   }
+
   static args = [
-    {name: 'name', description: 'name of hook (snake_case)', required: true}
+    {name: 'name', description: 'name of hook (snake_case)', required: true},
   ]
 
   async run() {

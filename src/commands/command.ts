@@ -16,8 +16,9 @@ export default abstract class AppCommand extends Base {
     defaults: flags.boolean({description: 'use defaults for every setting'}),
     force: flags.boolean({description: 'overwrite existing files'}),
   }
+
   static args = [
-    {name: 'name', description: 'name of command', required: true}
+    {name: 'name', description: 'name of command', required: true},
   ]
 
   async run() {
@@ -25,7 +26,7 @@ export default abstract class AppCommand extends Base {
     await super.generate('command', {
       name: args.name,
       defaults: flags.defaults,
-      force: flags.force
+      force: flags.force,
     } as Options)
   }
 }

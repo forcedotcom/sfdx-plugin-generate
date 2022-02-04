@@ -22,7 +22,7 @@ module.exports = (_, options) => {
     'example-multi-ts',
   ]
 
-  examples.forEach(example => {
+  for (const example of examples) {
     const [, type, format] = example.split('-')
 
     const options = format === 'ts' ?
@@ -51,6 +51,7 @@ module.exports = (_, options) => {
     if (type === 'multi') {
       sh.exec('oclif command goodbye --force --defaults')
     }
+
     sh.exec('git add -A')
     try {
       execa.sync('git', ['commit', '-m', `${releaseType === 'patch' ? 'fix' : 'feat'}: oclif v${version}\n\n${notes}`], {stdio: 'inherit'})
@@ -58,6 +59,7 @@ module.exports = (_, options) => {
     } catch (error) {
       console.error(error)
     }
+
     sh.popd()
-  })
+  }
 }

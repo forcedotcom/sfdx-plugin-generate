@@ -110,10 +110,5 @@
     "test": "concurrently --kill-others-on-fail --prefix-colors \"dim\" --prefix \"[{name}]\" --names \"basic\" 'mocha --forbid-only test/commands/plugins-generate/basic.test.js'",
     "version": "oclif-dev readme && git add README.md"
   },
-  "types": "lib/index.d.ts",
-  "husky": {
-    "hooks": {
-      "commit-msg": "sf-husky-commit-msg"
-    }
-  }
+  "types": "lib/index.d.ts"
 }

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/oclif/oclif/compare/v1.2.1...v1.2.2) (2022-02-04)
+
+
+### Bug Fixes
+
+* bump deps ([9e7f376](https://github.com/oclif/oclif/commit/9e7f3768c7e232934bf383239df6c2794b1ec31b))
+* remove dep on trim-newlines by removing nps-utils ([c84f181](https://github.com/oclif/oclif/commit/c84f18155c4f3da7decaa50bcd8716c192e9402f))
+
 ### [1.2.1](https://github.com/oclif/oclif/compare/v1.2.0...v1.2.1) (2021-10-12)
 
 ## [1.2.0](https://github.com/oclif/oclif/compare/v1.1.8...v1.2.0) (2021-08-11)

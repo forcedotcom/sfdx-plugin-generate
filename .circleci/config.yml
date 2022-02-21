@@ -65,6 +65,7 @@ workflows:
           requires:
             - lint
       - release-management/release-package:
+          context: AWS
           sign: true
           github-release: true
           requires:

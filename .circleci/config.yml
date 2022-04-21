@@ -65,7 +65,9 @@ workflows:
           requires:
             - lint
       - release-management/release-package:
-          context: AWS
+          context:
+            - AWS
+            - salesforce-cli
           sign: true
           github-release: true
           requires:

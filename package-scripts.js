@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/filename-case */
-
 const script = (script, description) => description ? {script, description} : {script}
 const _ = require('lodash')
 const sh = require('shelljs')

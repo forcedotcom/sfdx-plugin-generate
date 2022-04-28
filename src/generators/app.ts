@@ -1,7 +1,6 @@
 // eslint:disable no-floating-promises
 // eslint:disable no-console
 
-import {execSync} from 'node:child_process'
 import * as fs from 'node:fs'
 import * as _ from 'lodash'
 import * as path from 'node:path'
@@ -9,7 +8,6 @@ import * as Generator from 'yeoman-generator'
 import yosay = require('yosay')
 
 const sortPjson = require('sort-pjson')
-const fixpack = require('@oclif/fixpack')
 const debug = require('debug')('generator-oclif')
 const {version} = require('../../package.json')
 
@@ -17,27 +15,14 @@ const isWindows = process.platform === 'win32'
 const rmrf = isWindows ? 'rimraf' : 'rm -rf'
 const rmf = isWindows ? 'rimraf' : 'rm -f'
 
-let hasYarn = false
-try {
-  execSync('yarn -v', {stdio: 'ignore'})
-  hasYarn = true
-} catch {}
+let successfullyInstalledDeps = false
 
 class App extends Generator {
   options: {
     defaults?: boolean
-    mocha: boolean
     circleci: boolean
-    appveyor: boolean
-    typescript: boolean
-    tslint: boolean
-    eslint: boolean
-    yarn: boolean
-    travisci: boolean
   }
 
-  args!: {[k: string]: string}
-  type: 'single' | 'multi' | 'plugin' | 'base' | 'sfdx-plugin'
   path: string
   pjson: any
   githubUser: string | undefined
@@ -57,22 +42,15 @@ class App extends Generator {
     mocha: boolean
     ci: {
       circleci: boolean
-      appveyor: boolean
-      travisci: boolean
     }
   }
 
   mocha!: boolean
   circleci!: boolean
-  appveyor!: boolean
   ts!: boolean
   tslint!: boolean
   eslint!: boolean
   yarn!: boolean
-  travisci!: boolean
-  get _ext() {
-    return this.ts ? 'ts' : 'js'
-  }
 
   get _bin() {
     // eslint-disable-next-line no-mixed-operators
@@ -84,40 +62,19 @@ class App extends Generator {
   repository?: string
 
   constructor(args: any, opts: any) {
-    super(args, opts)
+    super(args, opts, {
+      customInstallTask: true,
+    })
 
-    this.type = opts.type
     this.path = opts.path
     this.options = {
       defaults: opts.defaults,
-      mocha: opts.options.includes('mocha'),
       circleci: opts.options.includes('circleci'),
-      appveyor: opts.options.includes('appveyor'),
-      typescript: opts.options.includes('typescript'),
-      tslint: opts.options.includes('tslint'),
-      eslint: opts.options.includes('eslint'),
-      yarn: opts.options.includes('yarn') || hasYarn,
-      travisci: opts.options.includes('travisci'),
     }
   }
 
   async prompting() {
-    let msg
-    switch (this.type) {
-    case 'single':
-      msg = 'Time to build a single-command CLI with oclif!'
-      break
-    case 'multi':
-      msg = 'Time to build a multi-command CLI with oclif!'
-      break
-    case 'sfdx-plugin':
-      msg = 'Time to build an sfdx-cli plugin!'
-      break
-    default:
-      msg = `Time to build a oclif ${this.type}!`
-    }
-
-    this.log(yosay(`${msg} Version: ${version}`))
+    this.log(yosay(`Time to build an sfdx-cli plugin! Version: ${version}`))
 
     if (this.path) {
       this.destinationRoot(path.resolve(this.path))
@@ -133,10 +90,7 @@ class App extends Generator {
     this.pjson = {
       scripts: {},
       engines: {},
-      devDependencies: {},
-      dependencies: {},
       oclif: {},
-      ...this.fs.readJSON('package.json', {}),
     }
     let repository = this.destinationRoot().split(path.sep).slice(-2).join('/')
     if (this.githubUser) repository = `${this.githubUser}/${repository.split('/')[1]}`
@@ -166,13 +120,6 @@ class App extends Generator {
         message: 'npm package name',
         default: defaults.name,
         when: !this.pjson.name,
-      },
-      {
-        type: 'input',
-        name: 'bin',
-        message: 'command bin name the CLI will export',
-        default: (answers: any) => (answers.name || this._bin).split('/').pop(),
-        when: ['single', 'multi'].includes(this.type) && !this.pjson.oclif.bin,
       },
       {
         type: 'input',
@@ -216,145 +163,56 @@ class App extends Generator {
         default: (answers: any) => (this.pjson.repository || answers.name || this.pjson.name).split('/').pop(),
         when: !this.pjson.repository,
       },
-      {
-        type: 'checkbox',
-        name: 'ci',
-        message: 'Add CI service config',
-        choices: [
-          {name: 'circleci (continuous integration/delivery service)', value: 'circleci'},
-          {name: 'appveyor (continuous integration/delivery service)', value: 'appveyor'},
-          {name: 'travisci (continuous integration/delivery service)', value: 'travisci'},
-        ],
-        filter: ((arr: string[]) => _.keyBy(arr)) as any,
-        when: this.type !== 'sfdx-plugin',
-      },
     ]) as any
     debug(this.answers)
-
-    const sfdxPluginOptions = {
-      typescript: true,
-      mocha: true,
-      tslint: false,
-      yarn: true,
-      circleci: true,
-      appveyor: true,
-      eslint: true,
-      travisci: false,
-    }
-    this.options = this.type === 'sfdx-plugin' ? sfdxPluginOptions : this.options
-
-    this.ts = this.options.typescript
-    this.tslint = this.options.tslint
-    this.yarn = this.options.yarn
-    this.mocha = this.options.mocha
-    this.circleci = this.options.circleci
-    this.appveyor = this.options.appveyor
-    this.eslint = this.options.eslint
-    this.travisci = this.options.travisci
 
     this.pjson.name = this.answers.name || defaults.name
     this.pjson.description = this.answers.description || defaults.description
     this.pjson.version = this.answers.version || defaults.version
     this.pjson.engines.node = defaults.engines.node
     this.pjson.author = this.answers.author || defaults.author
-    this.pjson.files = this.answers.files || defaults.files || [(this.ts ? '/lib' : '/src')]
+    this.pjson.files = this.answers.files || defaults.files || ['/lib']
     this.pjson.license = this.answers.license || defaults.license
     this.pjson.repository = this.answers.github ? `${this.answers.github.user}/${this.answers.github.repo}` : defaults.repository
     this.repository = this.pjson.repository
-    if (this.tslint) {
-      this.pjson.scripts.posttest = `tslint -p ${this.mocha ? 'test' : '.'} -t stylish`
-    }
+    this.pjson.scripts.posttest = 'eslint .'
 
-    if (this.eslint) {
-      this.pjson.scripts.posttest = 'eslint .'
-    }
+    this.pjson.scripts.test = 'nyc --extension .ts --require ts-node/register mocha --forbid-only "test/**/*.test.ts"'
+    this.pjson.scripts.prepack = `${rmrf} lib && tsc -b`
+    this.pjson.scripts.build = 'tsc -p .'
 
-    this.pjson.scripts.test = this.mocha ? `nyc ${this.ts ? '--extension .ts --require ts-node/register ' : ''}mocha --forbid-only "test/**/*.test.${this._ext}"` : 'echo NO TESTS'
-    if (this.ts) {
-      this.pjson.scripts.prepack = `${rmrf} lib && tsc -b`
-      this.pjson.scripts.build = 'tsc -p .'
-    }
+    this.pjson.scripts.lint = 'eslint src/**/*.ts test/**/*.ts'
+    this.pjson.scripts.posttest = 'eslint src/**/*.ts test/**/*.ts'
+    this.pjson.scripts.prepack = `${this.pjson.scripts.prepack} && oclif-dev manifest && oclif-dev readme`
+    this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`
+    this.pjson.scripts.version = 'oclif-dev readme && git add README.md'
+    this.pjson.files.push('/oclif.manifest.json', '/npm-shrinkwrap.json', '/messages')
 
-    if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
-      this.pjson.scripts.lint = 'eslint src/**/*.ts test/**/*.ts'
-      this.pjson.scripts.posttest = 'eslint src/**/*.ts test/**/*.ts'
-      this.pjson.scripts.prepack = `${this.pjson.scripts.prepack} && oclif-dev manifest && oclif-dev readme`
-      this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`
-      this.pjson.scripts.version = 'oclif-dev readme && git add README.md'
-      this.pjson.files.push('/oclif.manifest.json', '/npm-shrinkwrap.json')
-      if (this.type === 'sfdx-plugin') {
-        this.pjson.files.push('/messages')
-      }
-    }
-
-    if (this.type === 'plugin' && hasYarn) {
-      // for plugins, add yarn.lock file to package so we can lock plugin dependencies
-      this.pjson.files.push('/yarn.lock')
-    }
-
-    let keywords
-    switch (this.type) {
-    case 'sfdx-plugin':
-      keywords = 'sfdx-plugin'
-      break
-    case 'plugin':
-      keywords = 'oclif-plugin'
-      break
-    default:
-      keywords = 'oclif'
-    }
+    const keywords = 'sfdx-plugin'
 
     this.pjson.keywords = defaults.keywords || [keywords]
     this.pjson.homepage = defaults.homepage || `https://github.com/${this.pjson.repository}`
     this.pjson.bugs = defaults.bugs || `https://github.com/${this.pjson.repository}/issues`
-
-    if (['single', 'multi'].includes(this.type)) {
-      this.pjson.oclif.bin = this.answers.bin || this._bin
-      this.pjson.bin = this.pjson.bin || {}
-      this.pjson.bin[this.pjson.oclif.bin] = './bin/run'
-      this.pjson.files.push('/bin')
-    } else if (this.type === 'plugin') {
-      this.pjson.oclif.bin = 'oclif-example'
-    }
-
-    if (this.type !== 'plugin' && this.type !== 'sfdx-plugin') {
-      this.pjson.main = defaults.main || (this.ts ? 'lib/index.js' : 'src/index.js')
-      if (this.ts) {
-        this.pjson.types = defaults.types || 'lib/index.d.ts'
-      }
-    }
   }
 
   writing() {
+    this.env.cwd = process.cwd()
+    this.env.options.nodePackageManager = 'yarn'
     this.sourceRoot(path.join(__dirname, '../../templates'))
 
-    switch (this.type) {
-    case 'multi':
-    case 'plugin':
-    case 'sfdx-plugin':
-      this.pjson.oclif = {
-        commands: `./${this.ts ? 'lib' : 'src'}/commands`,
-        // hooks: {init: `./${this.ts ? 'lib' : 'src'}/hooks/init`},
-        bin: 'sfdx',
-        topics: {
-          hello: {
-            description: 'Commands to say hello.',
-          },
+    this.pjson.oclif = {
+      commands: './lib/commands',
+      bin: 'sfdx',
+      topics: {
+        hello: {
+          description: 'Commands to say hello.',
         },
-        ...this.pjson.oclif,
-      }
-      break
-    default:
+      },
+      ...this.pjson.oclif,
     }
 
-    if ((this.type === 'plugin' || this.type === 'sfdx-plugin') && !this.pjson.oclif.devPlugins) {
+    if (!this.pjson.oclif.devPlugins) {
       this.pjson.oclif.devPlugins = [
-        '@oclif/plugin-help',
-      ]
-    }
-
-    if (this.type === 'multi' && !this.pjson.oclif.plugins) {
-      this.pjson.oclif.plugins = [
         '@oclif/plugin-help',
       ]
     }
@@ -363,55 +221,18 @@ class App extends Generator {
       this.pjson.oclif.plugins.sort()
     }
 
-    if (this.ts) {
-      if (this.type !== 'sfdx-plugin') {
-        if (this.tslint) {
-          this.fs.copyTpl(this.templatePath('tslint.json'), this.destinationPath('tslint.json'), this)
-        }
+    this.fs.copyTpl(this.templatePath('sfdxPlugin/test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
 
-        this.fs.copyTpl(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'), this)
-      }
-
-      if (this.mocha) {
-        if (this.type === 'sfdx-plugin') {
-          this.fs.copyTpl(this.templatePath('sfdxPlugin/test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
-        } else {
-          this.fs.copyTpl(this.templatePath('test/tsconfig.json'), this.destinationPath('test/tsconfig.json'), this)
-        }
-      }
-    }
-
-    if (this.eslint && this.type !== 'sfdx-plugin') {
-      this.fs.copyTpl(this.templatePath('eslintrc'), this.destinationPath('.eslintrc'), this)
-      const eslintignore = this._eslintignore()
-      if (eslintignore.trim()) this.fs.write(this.destinationPath('.eslintignore'), this._eslintignore())
-    }
-
-    if (this.mocha) {
-      this.fs.copyTpl(this.templatePath('test/mocha.json'), this.destinationPath('test/mocha.json'), this)
-    }
-
-    if (this.fs.exists(this.destinationPath('./package.json'))) {
-      fixpack(this.destinationPath('./package.json'), require('@oclif/fixpack/config.json'))
-    }
+    this.fs.copyTpl(this.templatePath('test/mocha.json'), this.destinationPath('test/mocha.json'), this)
 
     if (_.isEmpty(this.pjson.oclif)) delete this.pjson.oclif
     this.pjson.files = _.uniq((this.pjson.files || []).sort())
 
-    this.fs.writeJSON(this.destinationPath('./package.json'), sortPjson(this.pjson))
     this.fs.copyTpl(this.templatePath('editorconfig'), this.destinationPath('.editorconfig'), this)
 
-    if (this.circleci) {
-      this.fs.copyTpl(this.templatePath('circle.yml.ejs'), this.destinationPath('.circleci/config.yml'), this)
-    }
+    this.fs.copyTpl(this.templatePath('circle.yml.ejs'), this.destinationPath('.circleci/config.yml'), this)
 
-    if (this.appveyor) {
-      this.fs.copyTpl(this.templatePath('appveyor.yml.ejs'), this.destinationPath('appveyor.yml'), this)
-    }
-
-    if (this.travisci) {
-      this.fs.copyTpl(this.templatePath('travis.yml.ejs'), this.destinationPath('.travis.yml'), this)
-    }
+    this.fs.copyTpl(this.templatePath('appveyor.yml.ejs'), this.destinationPath('appveyor.yml'), this)
 
     this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
 
@@ -420,155 +241,80 @@ class App extends Generator {
     }
 
     this.fs.write(this.destinationPath('.gitignore'), this._gitignore())
-    if (this.type !== 'sfdx-plugin') {
-      this.fs.copyTpl(this.templatePath('README.md.ejs'), this.destinationPath('README.md'), this)
+
+    this._writeSfdxPlugin()
+
+    // dependencies
+    let dependencies = {}
+    let devDependencies = {}
+
+    dependencies = {
+      ...dependencies,
+      '@oclif/command': '^1',
+      '@oclif/config': '^1',
+      '@oclif/errors': '^1',
+      '@salesforce/command': '^4',
+      '@salesforce/core': '^2',
+      tslib: '^2',
+    }
+    devDependencies = {
+      ...devDependencies,
+      '@oclif/dev-cli': '^1',
+      '@oclif/plugin-help': '^3',
+      globby: '^11',
+      '@salesforce/dev-config': '^2',
+      '@salesforce/dev-scripts': '^0',
+      '@salesforce/prettier-config': '^0',
+      '@salesforce/ts-sinon': '^1',
+      '@types/jsforce': '^1.9.29',
+      '@typescript-eslint/eslint-plugin': '^4',
+      '@typescript-eslint/parser': '^4',
+      'eslint-config-prettier': '^8',
+      'eslint-config-salesforce': '^0',
+      'eslint-config-salesforce-typescript': '^0',
+      'eslint-plugin-header': '^3',
+      'eslint-plugin-import': '^2',
+      'eslint-plugin-jsdoc': '^35',
+      'eslint-plugin-prettier': '^3',
+      'eslint-plugin-typescript': '^0',
+      husky: '^4',
+      prettier: '^2',
+      'pretty-quick': '^3',
+      'ts-node': '^10',
+      typescript: '4',
+      mocha: '^8',
+      nyc: '^15',
+      chai: '^4',
+      sinon: '10.0.0',
+      '@oclif/test': '^1',
+      '@types/chai': '^4',
+      '@types/mocha': '^8',
+      eslint: '^7',
+      'eslint-config-oclif': '^3.1',
     }
 
-    switch (this.type) {
-    case 'single':
-      this._writeSingle()
-      break
-    case 'plugin':
-      this._writePlugin()
-      break
-    case 'sfdx-plugin':
-      this._writeSfdxPlugin()
-      break
-    case 'multi':
-      this._writeMulti()
-      break
-    default:
-      this._writeBase()
-    }
+    if (isWindows) devDependencies = {...devDependencies, rimraf: 'latest'}
+    this.pjson.dependencies = dependencies
+    this.pjson.devDependencies = devDependencies
+
+    // Merge `this.pjson` and write file
+    this.packageJson.merge(sortPjson(this.pjson))
   }
 
-  install() {
-    const dependencies: string[] = []
-    const devDependencies: string[] = []
-    switch (this.type) {
-    case 'base': break
-    case 'single':
-      dependencies.push(
-        '@oclif/config@^1',
-        '@oclif/command@^1',
-        '@oclif/plugin-help@^3',
-      )
-      break
-    case 'plugin':
-      dependencies.push(
-        '@oclif/command@^1',
-        '@oclif/config@^1',
-      )
-      devDependencies.push(
-        '@oclif/dev-cli@^1',
-        '@oclif/plugin-help@^3',
-        'globby@^11',
-      )
-      break
-    case 'sfdx-plugin':
-      dependencies.push(
-        '@oclif/command@^1',
-        '@oclif/config@^1',
-        '@oclif/errors@^1',
-        '@salesforce/command@^4',
-        '@salesforce/core@^2',
-      )
-      devDependencies.push(
-        '@oclif/dev-cli@^1',
-        '@oclif/plugin-help@^3',
-        'globby@^11',
-        '@salesforce/dev-config@^2',
-        '@salesforce/dev-scripts@^0',
-        '@salesforce/prettier-config@^0',
-        '@salesforce/ts-sinon@^1',
-        '@types/jsforce@^1.9.29',
-        '@typescript-eslint/eslint-plugin@^4',
-        '@typescript-eslint/parser@^4',
-        'eslint-config-prettier@^8',
-        'eslint-config-salesforce@^0',
-        'eslint-config-salesforce-typescript@^0',
-        'eslint-plugin-header@^3',
-        'eslint-plugin-import@^2',
-        'eslint-plugin-jsdoc@^35',
-        'eslint-plugin-prettier@^3',
-        'eslint-plugin-typescript@^0',
-        'husky@^4',
-        'prettier@^2',
-        'pretty-quick@^3',
-      )
-      break
-    case 'multi':
-      dependencies.push(
-        '@oclif/config@^1',
-        '@oclif/command@^1',
-        '@oclif/plugin-help@^3',
-      )
-      devDependencies.push(
-        '@oclif/dev-cli@^1',
-        'globby@^11',
-      )
-    }
-
-    if (this.mocha) {
-      devDependencies.push(
-        'mocha@^8',
-        'nyc@^15',
-        'chai@^4',
-        'sinon@10.0.0',
-      )
-      if (this.type !== 'base') devDependencies.push(
-        '@oclif/test@^1',
-      )
-    }
-
-    if (this.ts) {
-      dependencies.push(
-        'tslib@^2',
-      )
-      devDependencies.push(
-        'ts-node@^10',
-        'typescript@4',
-      )
-      if (this.mocha) {
-        devDependencies.push(
-          '@types/chai@^4',
-          '@types/mocha@^8',
-        )
-      }
-
-      if (this.tslint) {
-        devDependencies.push(
-          'tslint@^6',
-        )
-      }
-    }
-
-    if (this.eslint) {
-      devDependencies.push(
-        'eslint@^7',
-        'eslint-config-oclif@^3.1',
-      )
-    }
-
-    if (isWindows) devDependencies.push('rimraf')
+  async install() {
     const yarnOpts = {} as any
     if (process.env.YARN_MUTEX) yarnOpts.mutex = process.env.YARN_MUTEX
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    const install = (deps: string[], opts: object) => this.yarn ? this.yarnInstall(deps, opts) : this.npmInstall(deps, opts)
-    const dev = this.yarn ? {dev: true} : {'save-dev': true}
-    const save = this.yarn ? {} : {save: true}
-    return Promise.all([
-      install(devDependencies, {...yarnOpts, ...dev, ignoreScripts: true}),
-      install(dependencies, {...yarnOpts, ...save}),
-    ]).then(() => {
-      // if (!this.yarn) {
-      //   return this.spawnCommand('npm', ['shrinkwrap'])
-      // }
-    })
+
+    try {
+      await this.spawnCommand('yarn', ['install'], yarnOpts)
+      successfullyInstalledDeps = true
+    } catch {
+      console.log('Could not finish installation. \nPlease install yarn with npm install -g yarn and try again.')
+    }
   }
 
   end() {
-    if (['sfdx-plugin', 'plugin', 'multi'].includes(this.type)) {
+    if (successfullyInstalledDeps) {
       this.spawnCommandSync(path.join('.', 'node_modules/.bin/oclif-dev'), ['readme'])
     }
 
@@ -584,56 +330,14 @@ class App extends Generator {
       '/tmp',
       '/dist',
       '/.nyc_output',
-      this.yarn ? '/package-lock.json' : '/yarn.lock',
-      this.ts && '/lib',
+      '/package-lock.json',
+      '/lib',
     ])
     .concat(existing)
     .compact()
     .uniq()
     .sort()
     .join('\n') + '\n'
-  }
-
-  private _eslintignore(): string {
-    const existing = this.fs.exists(this.destinationPath('.eslintignore')) ? this.fs.read(this.destinationPath('.eslintignore')).split('\n') : []
-    return _([
-      this.ts && '/lib',
-    ])
-    .concat(existing)
-    .compact()
-    .uniq()
-    .sort()
-    .join('\n') + '\n'
-  }
-
-  private _writeBase() {
-    if (!fs.existsSync('src')) {
-      this.fs.copyTpl(this.templatePath(`base/src/index.${this._ext}`), this.destinationPath(`src/index.${this._ext}`), this)
-    }
-
-    if (this.mocha && !fs.existsSync('test')) {
-      this.fs.copyTpl(this.templatePath(`base/test/index.test.${this._ext}`), this.destinationPath(`test/index.test.${this._ext}`), this)
-    }
-  }
-
-  private _writePlugin() {
-    const bin = this._bin
-    const cmd = `${bin} hello`
-    const opts = {...this as any, _, bin, cmd}
-    this.fs.copyTpl(this.templatePath('plugin/bin/run'), this.destinationPath('bin/run'), opts)
-    this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
-    const commandPath = this.destinationPath(`src/commands/hello.${this._ext}`)
-    if (!fs.existsSync('src/commands')) {
-      this.fs.copyTpl(this.templatePath(`src/command.${this._ext}.ejs`), commandPath, {...opts, name: 'hello', path: commandPath.replace(process.cwd(), '.')})
-    }
-
-    if (this.ts && this.type !== 'multi') {
-      this.fs.copyTpl(this.templatePath('plugin/src/index.ts'), this.destinationPath('src/index.ts'), opts)
-    }
-
-    if (this.mocha && !fs.existsSync('test')) {
-      this.fs.copyTpl(this.templatePath(`test/command.test.${this._ext}.ejs`), this.destinationPath(`test/commands/hello.test.${this._ext}`), {...opts, name: 'hello'})
-    }
   }
 
   private _writeSfdxPlugin() {
@@ -645,12 +349,12 @@ class App extends Generator {
     this.fs.copyTpl(this.templatePath('plugin/bin/run'), this.destinationPath('bin/run'), opts)
     this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/README.md.ejs'), this.destinationPath('README.md'), this)
-    this.fs.copy(this.templatePath('.images/vscodeScreenshot.png'), this.destinationPath('.images/vscodeScreenshot.png'), this)
+    this.fs.copy(this.templatePath('.images/vscodeScreenshot.png'), this.destinationPath('.images/vscodeScreenshot.png'))
     this.fs.copyTpl(this.templatePath('sfdxPlugin/.eslintrc.js'), this.destinationPath('.eslintrc.js'), this)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/tsconfig.json'), this.destinationPath('tsconfig.json'), this)
     this.fs.copyTpl(this.templatePath('sfdxPlugin/.prettierrc.json'), this.destinationPath('.prettierrc.json'), this)
     if (!fs.existsSync('src/commands')) {
-      this.fs.copyTpl(this.templatePath(`src/sfdxCommand.${this._ext}.ejs`), this.destinationPath(`src/commands/${topic}/${sfdxExampleCommand}.${this._ext}`), {
+      this.fs.copyTpl(this.templatePath('src/sfdxCommand.ts.ejs'), this.destinationPath(`src/commands/${topic}/${sfdxExampleCommand}.ts`), {
         ...opts,
         pluginName: this.pjson.name,
         commandName: sfdxExampleCommand,
@@ -659,8 +363,8 @@ class App extends Generator {
     }
 
     this.fs.copyTpl(this.templatePath('sfdxPlugin/src/index.ts'), this.destinationPath('src/index.ts'), opts)
-    if (this.mocha && !fs.existsSync('test')) {
-      this.fs.copyTpl(this.templatePath(`sfdxPlugin/test/command.test.${this._ext}.ejs`), this.destinationPath(`test/commands/${topic}/${sfdxExampleCommand}.test.${this._ext}`), {...opts, name: sfdxExampleCommand, topic})
+    if (!fs.existsSync('test')) {
+      this.fs.copyTpl(this.templatePath('sfdxPlugin/test/command.test.ts.ejs'), this.destinationPath(`test/commands/${topic}/${sfdxExampleCommand}.test.ts`), {...opts, name: sfdxExampleCommand, topic})
     }
 
     if (!fs.existsSync('messages/messages.json')) {
@@ -677,30 +381,6 @@ class App extends Generator {
 
     if (!fs.existsSync('.vscode/tasks.json')) {
       this.fs.copyTpl(this.templatePath('.vscode/tasks.json'), this.destinationPath('.vscode/tasks.json'), this)
-    }
-  }
-
-  private _writeSingle() {
-    const bin = this._bin
-    const opts = {...this as any, _, bin, cmd: bin, name: this.pjson.name}
-    this.fs.copyTpl(this.templatePath(`single/bin/run.${this._ext}`), this.destinationPath('bin/run'), opts)
-    this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts)
-    const commandPath = this.destinationPath(`src/index.${this._ext}`)
-    if (!this.fs.exists(`src/index.${this._ext}`)) {
-      this.fs.copyTpl(this.templatePath(`src/command.${this._ext}.ejs`), this.destinationPath(`src/index.${this._ext}`), {...opts, path: commandPath.replace(process.cwd(), '.')})
-    }
-
-    if (this.mocha && !this.fs.exists(`test/index.test.${this._ext}`)) {
-      this.fs.copyTpl(this.templatePath(`test/command.test.${this._ext}.ejs`), this.destinationPath(`test/index.test.${this._ext}`), opts)
-    }
-  }
-
-  private _writeMulti() {
-    this._writePlugin()
-    this.fs.copyTpl(this.templatePath('bin/run'), this.destinationPath('bin/run'), this)
-    this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), this)
-    if (!this.fs.exists(`src/index.${this._ext}`)) {
-      this.fs.copyTpl(this.templatePath(`multi/src/index.${this._ext}`), this.destinationPath(`src/index.${this._ext}`), this)
     }
   }
 }

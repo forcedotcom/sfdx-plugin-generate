@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 module.exports = (_, options) => {
   const sh = require('shelljs')
   const execa = require('execa')

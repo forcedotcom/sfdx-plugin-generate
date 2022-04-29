@@ -1,0 +1,8 @@
+[
+  {
+    "command": "plugins:generate",
+    "plugin": "@salesforce/plugin-generator",
+    "flags": ["defaults", "force"],
+    "alias": []
+  }
+]

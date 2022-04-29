@@ -1,74 +1,92 @@
----
 version: 2.1
 orbs:
   release-management: salesforce/npm-release-management@4
-jobs:
-  lint: &lint
-    docker:
-      - image: node:latest
-    # environment:
-    #   - TEST_SERIES: 1
-    working_directory: ~/cli
-    steps:
-      - checkout
-      - restore_cache: &restore_cache
-          keys:
-            - v5-{{checksum ".circleci/config.yml"}}-{{ checksum "yarn.lock"}}
-            - v5-{{checksum ".circleci/config.yml"}}
-            - v5
-      - run: yarn add -D mocha-junit-reporter@1
-      - run: yarn exec nps lint
-      - persist_to_workspace: {root: node_modules,  paths: ["*"]}
-  node-latest-plugins-generate-test:
-    <<: *lint
-    steps: &plugins_generate_steps
-      - checkout
-      - restore_cache: *restore_cache
-      - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_git
-      - run: yarn exec nps test.plugins-generate
-      - store_test_results: &store_test_results
-          path: ~/cli/reports
+parameters:
+  sfdx_version:
+    description: |
+      By default, the latest version of the standalone CLI will be installed.
+      To install via npm, supply a version tag such as "latest" or "6".
+    default: ''
+    type: string
+  repo_tag:
+    description: "The tag of the module repo to checkout, '' defaults to branch/PR"
+    default: ''
+    type: string
+  npm_module_name:
+    description: 'The fully qualified npm module name, i.e. @salesforce/plugins-data'
+    default: ''
+    type: string
+  workflow:
+    description: |
+      String that controls which workflow would run.
 
-  cache:
-    <<: *lint
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v5-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
-      - run: yarn add -D mocha-junit-reporter@1
-      - run: yarn exec nps test.command
-      - save_cache:
-          key: v5-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
-          paths:
-            - /usr/local/share/.cache/yarn
-            - /usr/local/share/.config/yarn
-
+      This parameter is used by automation to determine if a workflow will run
+      within a pipeline.
+    type: string
+    default: 'test-and-release'
 workflows:
   version: 2
-  oclif:
+  test-and-release:
+    when:
+      equal: [test-and-release, << pipeline.parameters.workflow >>]
     jobs:
-      - lint:
+      - release-management/validate-pr:
           filters:
             branches:
               ignore: main
-      - node-latest-plugins-generate-test: {requires: [lint] }
-
-  release:
-    jobs:
-      - lint:
-          filters:
-            branches:
-              only: main
-      - node-latest-plugins-generate-test:
+      - release-management/test-package:
+          matrix:
+            parameters:
+              os:
+                - linux
+              node_version:
+                - lts
+      - release-management/test-nut:
+          name: nuts-on-linux
+          sfdx_version: latest
           requires:
-            - lint
+            - release-management/test-package
+      - release-management/test-nut:
+          name: nuts-on-windows
+          node_version: lts
+          sfdx_version: latest
+          os: windows
+          requires:
+            - release-management/test-package
       - release-management/release-package:
-          context:
-            - AWS
-            - salesforce-cli
           sign: true
           github-release: true
           requires:
-            - node-latest-plugins-generate-test
+            - release-management/test-package
+          filters:
+            branches:
+              only: main
+          context:
+            - CLI_CTC
+            - AWS
+            - salesforce-cli
+  test-ts-update:
+    when:
+      equal: [test-ts-update, << pipeline.parameters.workflow >>]
+    jobs:
+      - release-management/test-ts-update
+  just-nuts:
+    when:
+      equal: [just-nuts, << pipeline.parameters.workflow >>]
+    jobs:
+      - release-management/test-nut:
+          name: just-nuts-<< matrix.os >>
+          sfdx_version: << pipeline.parameters.sfdx_version >>
+          sfdx_executable_path: sfdx
+          repo_tag: << pipeline.parameters.repo_tag >>
+          matrix:
+            parameters:
+              os:
+                - linux
+                - windows
+          npm_module_name: << pipeline.parameters.npm_module_name >>
+  dependabot-automerge:
+    when:
+      equal: [dependabot-automerge, << pipeline.parameters.workflow >>]
+    jobs:
+      - release-management/dependabot-automerge

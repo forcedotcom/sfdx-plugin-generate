@@ -1,0 +1,9 @@
+{
+  "exclude-scripts": ["lint", "docs", "test", "pretest"],
+  "scripts": {
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "test": {
+    "testsPath": "test/commands/plugins-generate/basic.test.js"
+  }
+}

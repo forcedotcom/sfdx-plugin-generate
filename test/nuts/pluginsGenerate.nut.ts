@@ -29,6 +29,11 @@ describe('plugins:generate', () => {
       cwd: sfdxPluginDir,
     };
 
+    // debugging windows bugs in CI is always fun, right?
+    const nodeOutput = shell.exec('node --version', shellJsOpts);
+    console.log(nodeOutput.stdout);
+    console.log(nodeOutput.stderr);
+
     const sfdxPluginYarnTestOutput = shell.exec('yarn test', shellJsOpts);
     expect(sfdxPluginYarnTestOutput.code, 'sfdx plugin: yarn test failed').equals(0);
 

@@ -7,8 +7,8 @@
 
 // eslint:disable no-floating-promises
 
-import * as fs from 'node:fs';
-import * as path from 'node:path';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as _ from 'lodash';
 import * as Generator from 'yeoman-generator';
 import { Options } from 'yeoman-environment';

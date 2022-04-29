@@ -8,13 +8,14 @@
 import { execCmd } from '@salesforce/cli-plugins-testkit';
 import { expect } from 'chai';
 import * as shell from 'shelljs';
+import * as path from 'path';
 import * as os from 'os';
 
 let sfdxPluginDir: string;
 
 describe('plugins:generate', () => {
   before(async () => {
-    sfdxPluginDir = os.tmpdir() + Date.now() + '/sfdxPlugin';
+    sfdxPluginDir = path.join(os.tmpdir(), Date.now().toString(), '/sfdxPlugin');
   });
 
   it('plugins:generate generates a valid sfdx plugin', async () => {

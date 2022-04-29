@@ -43,6 +43,7 @@ workflows:
                 - lts
       - release-management/test-nut:
           name: nuts-on-linux
+          node_version: lts
           sfdx_version: latest
           requires:
             - release-management/test-package

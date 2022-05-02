@@ -29,7 +29,11 @@ describe('plugins:generate', () => {
       cwd: sfdxPluginDir,
     };
 
-    const sfdxPluginYarnTestOutput = shell.exec('yarn mocha --forbid-only test/**/*.test.ts', shellJsOpts);
+    const nyc = require.resolve('nyc/bin/nyc');
+    const mocha = require.resolve('mocha/bin/mocha');
+
+    const command = `node ${nyc} --extension .ts --require ts-node/register ${mocha} "test/**/*.test.ts"`;
+    const sfdxPluginYarnTestOutput = shell.exec(command, shellJsOpts);
     expect(sfdxPluginYarnTestOutput.code, 'sfdx plugin: yarn test failed').equals(0);
 
     const sfdxPluginBinRunOutput = shell.exec('node ./bin/run hello:org --help', shellJsOpts);

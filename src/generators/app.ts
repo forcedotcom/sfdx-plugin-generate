@@ -125,17 +125,19 @@ class App extends Generator {
 
     this.pjson = {
       keywords: ['sfdx-plugin'],
-      files: ['/lib'],
+      files: ['/lib', '/messages', '/npm-shrinkwrap.json', '/oclif.manifest.json'],
       engines: {
         node: '>=12.0.0',
       },
-      scripts: {},
-    };
-
-    const defaultsOpts = {
-      repository,
-      // TODO: this doesn't seem to be used
-      options: this.options,
+      scripts: {
+        posttest: 'eslint src/**/*.ts test/**/*.ts',
+        test: 'nyc --extension .ts --require ts-node/register mocha --forbid-only "test/**/*.test.ts"',
+        prepack: `${rmrf} lib && tsc -b && oclif-dev manifest && oclif-dev readme`,
+        build: 'tsc -p .',
+        lint: 'eslint src/**/*.ts test/**/*.ts',
+        postpack: `${rmf} oclif.manifest.json`,
+        version: 'oclif-dev readme && git add README.md',
+      },
     };
 
     const defaultAnswers: IAnswers = {
@@ -208,19 +210,7 @@ class App extends Generator {
     this.pjson.license = this.answers.license;
     this.pjson.repository = this.answers.github
       ? `${this.answers.github.user}/${this.answers.github.repo}`
-      : defaultsOpts.repository;
-
-    this.pjson.scripts.posttest = 'eslint .';
-    this.pjson.scripts.test = 'nyc --extension .ts --require ts-node/register mocha --forbid-only "test/**/*.test.ts"';
-    this.pjson.scripts.prepack = `${rmrf} lib && tsc -b`;
-    this.pjson.scripts.build = 'tsc -p .';
-
-    this.pjson.scripts.lint = 'eslint src/**/*.ts test/**/*.ts';
-    this.pjson.scripts.posttest = 'eslint src/**/*.ts test/**/*.ts';
-    this.pjson.scripts.prepack = `${this.pjson.scripts.prepack} && oclif-dev manifest && oclif-dev readme`;
-    this.pjson.scripts.postpack = `${rmf} oclif.manifest.json`;
-    this.pjson.scripts.version = 'oclif-dev readme && git add README.md';
-    this.pjson.files.push('/oclif.manifest.json', '/npm-shrinkwrap.json', '/messages');
+      : repository;
 
     this.pjson.homepage = `https://github.com/${this.pjson.repository}`;
     this.pjson.bugs = `https://github.com/${this.pjson.repository}/issues`;

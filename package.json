@@ -107,7 +107,7 @@
     "posttest": "yarn run lint",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest",
     "prepare": "rm -f .oclif.manifest.json && yarn run prepack",
-    "test": "concurrently --kill-others-on-fail --prefix-colors \"dim\" --prefix \"[{name}]\" --names \"basic\" 'mocha --forbid-only test/commands/plugins-generate/basic.test.js'",
+    "test": "sf-test",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "lib/index.d.ts"

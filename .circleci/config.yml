@@ -1,74 +1,26 @@
----
 version: 2.1
 orbs:
   release-management: salesforce/npm-release-management@4
-jobs:
-  lint: &lint
-    docker:
-      - image: node:latest
-    # environment:
-    #   - TEST_SERIES: 1
-    working_directory: ~/cli
-    steps:
-      - checkout
-      - restore_cache: &restore_cache
-          keys:
-            - v5-{{checksum ".circleci/config.yml"}}-{{ checksum "yarn.lock"}}
-            - v5-{{checksum ".circleci/config.yml"}}
-            - v5
-      - run: yarn add -D mocha-junit-reporter@1
-      - run: yarn exec nps lint
-      - persist_to_workspace: {root: node_modules,  paths: ["*"]}
-  node-latest-plugins-generate-test:
-    <<: *lint
-    steps: &plugins_generate_steps
-      - checkout
-      - restore_cache: *restore_cache
-      - attach_workspace: {at: node_modules}
-      - run: .circleci/setup_git
-      - run: yarn exec nps test.plugins-generate
-      - store_test_results: &store_test_results
-          path: ~/cli/reports
+parameters:
+  workflow:
+    description: |
+      String that controls which workflow would run.
 
-  cache:
-    <<: *lint
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v5-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
-      - run: yarn add -D mocha-junit-reporter@1
-      - run: yarn exec nps test.command
-      - save_cache:
-          key: v5-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
-          paths:
-            - /usr/local/share/.cache/yarn
-            - /usr/local/share/.config/yarn
-
+      This parameter is used by automation to determine if a workflow will run
+      within a pipeline.
+    type: string
+    default: 'test-and-release'
 workflows:
   version: 2
-  oclif:
+  test-and-release:
+    when:
+      equal: [test-and-release, << pipeline.parameters.workflow >>]
     jobs:
-      - lint:
-          filters:
-            branches:
-              ignore: main
-      - node-latest-plugins-generate-test: {requires: [lint] }
-
-  release:
-    jobs:
-      - lint:
-          filters:
-            branches:
-              only: main
-      - node-latest-plugins-generate-test:
-          requires:
-            - lint
-      - release-management/release-package:
-          context:
-            - AWS
-            - salesforce-cli
-          sign: true
-          github-release: true
-          requires:
-            - node-latest-plugins-generate-test
+      - release-management/test-package:
+          matrix:
+            parameters:
+              os:
+                - linux
+                - windows
+              node_version:
+                - lts

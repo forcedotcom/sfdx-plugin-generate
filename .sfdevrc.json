@@ -1,0 +1,5 @@
+{
+  "test": {
+    "testsPath": "test/commands/plugins-generate/basic.test.js"
+  }
+}

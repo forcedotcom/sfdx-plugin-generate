@@ -1,4 +1,0 @@
-jobs:
-  - name: publish
-    buildTarget: 'prepack'
-  - name: promote

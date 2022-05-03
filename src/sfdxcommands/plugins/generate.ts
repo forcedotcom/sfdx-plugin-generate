@@ -28,7 +28,6 @@ export default class Generate extends Base {
       path: args.path as string,
       defaults: flagsGenerate.defaults,
       force: flagsGenerate.force,
-      options: [],
     });
   }
 }

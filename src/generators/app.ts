@@ -75,7 +75,6 @@ interface IAnswers {
 class App extends Generator {
   public options: {
     defaults?: boolean;
-    circleci: boolean;
   };
 
   public repository?: string;
@@ -102,7 +101,6 @@ class App extends Generator {
     this.path = opts.path as string;
     this.options = {
       defaults: opts.defaults as boolean,
-      circleci: (opts.options as string[]).includes('circleci'),
     };
   }
 

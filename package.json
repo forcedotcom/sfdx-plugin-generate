@@ -30,6 +30,7 @@
     "@types/shelljs": "^0.8.11",
     "@types/yeoman-environment": "^2.10.7",
     "@types/yeoman-generator": "^5.2.10",
+    "@types/yeoman-test": "^4.0.3",
     "@types/yosay": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.32.0",
@@ -55,7 +56,8 @@
     "shelljs": "^0.8.3",
     "sinon": "10.0.0",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "yeoman-test": "^6.3.0"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -69,7 +71,7 @@
   ],
   "homepage": "https://github.com/forcedotcom/sfdx-plugin-generate",
   "keywords": [
-    "oclif"
+    "sfdx-plugin"
   ],
   "license": "BSD-3-Clause",
   "main": "lib/index.js",
@@ -93,15 +95,16 @@
     "clean-all": "sf-clean all",
     "compile": "sf-compile",
     "format": "sf-format",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "sf-lint",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint && yarn test:deprecation-policy && yarn test:command-reference",
     "prepack": "sf-prepack",
     "prepare": "sf-install",
-    "test": "echo 'no tests'",
-    "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000",
+    "pretest": "sf-compile-test",
+    "test": "sf-test",
     "test:command-reference": "./bin/dev commandreference:generate --erroronwarnings",
     "test:deprecation-policy": "./bin/dev snapshot:compare",
+    "test:nuts": "nyc mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000",
     "version": "oclif readme"
   },
   "types": "lib/index.d.ts"

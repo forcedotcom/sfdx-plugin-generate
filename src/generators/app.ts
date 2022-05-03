@@ -75,6 +75,7 @@ interface IAnswers {
 class App extends Generator {
   public options: {
     defaults?: boolean;
+    skipInstall?: boolean;
   };
 
   public repository?: string;
@@ -101,6 +102,7 @@ class App extends Generator {
     this.path = opts.path as string;
     this.options = {
       defaults: opts.defaults as boolean,
+      skipInstall: (opts.skipInstall as boolean) || false,
     };
   }
 
@@ -326,6 +328,9 @@ class App extends Generator {
   }
 
   public async install(): Promise<void> {
+    if (this.options.skipInstall) {
+      return;
+    }
     const yarnOpts: AnyJson = {};
     if (process.env.YARN_MUTEX) yarnOpts.mutex = process.env.YARN_MUTEX;
 

@@ -1,34 +1,18 @@
 environment:
   nodejs_version: "10"
 cache:
-<%_ if (yarn) { _%>
   - '%LOCALAPPDATA%\Yarn -> appveyor.yml'
   - node_modules -> yarn.lock
-<%_ } else { _%>
-  - '%AppData%\npm-cache -> appveyor.yml'
-  - node_modules -> package-lock.json
-<%_ } _%>
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
-<%_ if (yarn) { _%>
   - yarn
-<%_ } else { _%>
-  - npm install
-<%_ } _%>
 
 build: off
 
 build_script:
   - ps: Write-Host “Prepack plugin”
-  - <%- yarn ? 'yarn' : 'npm' %> prepack
+  - yarn prepack
 
 test_script:
-<%_ if (type === 'single' || type === 'multi') { _%>
-  - .\bin\run --version
-  - .\bin\run --help
-<%_ } else if (type === 'plugin') { _%>
-  - .\bin\run --help
-<%_ } _%>
-  - <%- yarn ? 'yarn' : 'npm' %> test
-  
+  - yarn test

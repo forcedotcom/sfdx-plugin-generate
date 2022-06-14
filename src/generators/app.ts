@@ -127,23 +127,23 @@ class App extends Generator {
       keywords: ['sfdx-plugin'],
       files: ['/lib', '/messages', '/npm-shrinkwrap.json', '/oclif.manifest.json'],
       engines: {
-        node: '>=12.0.0',
+        node: '>=14.0.0',
       },
       scripts: {
         posttest: 'eslint src/**/*.ts test/**/*.ts',
         test: 'nyc --extension .ts --require ts-node/register mocha --forbid-only "test/**/*.test.ts"',
-        prepack: `${rmrf} lib && tsc -b && oclif-dev manifest && oclif-dev readme`,
+        prepack: `${rmrf} lib && tsc -b && oclif manifest && oclif readme`,
         build: 'tsc -p .',
         lint: 'eslint src/**/*.ts test/**/*.ts',
         postpack: `${rmf} oclif.manifest.json`,
-        version: 'oclif-dev readme && git add README.md',
+        version: 'oclif readme && git add README.md',
       },
     };
 
     const defaultAnswers: IAnswers = {
       name: this.determineAppname().replace(/ /g, '-'),
       description: '',
-      version: '0.0.0',
+      version: '0.0.1',
       license: 'MIT',
       author: this.githubUser ? `${this.user.git.name()} @${this.githubUser}` : this.user.git.name(),
     };
@@ -232,10 +232,6 @@ class App extends Generator {
       ...this.pjson.oclif,
     };
 
-    if (!this.pjson.oclif.devPlugins) {
-      this.pjson.oclif.devPlugins = ['@oclif/plugin-help'];
-    }
-
     if (this.pjson.oclif && Array.isArray(this.pjson.oclif.plugins)) {
       this.pjson.oclif.plugins.sort();
     }
@@ -275,47 +271,34 @@ class App extends Generator {
 
     dependencies = {
       ...dependencies,
-      '@oclif/command': '^1',
-      '@oclif/config': '^1',
-      '@oclif/errors': '^1',
-      '@salesforce/command': '^4',
-      '@salesforce/core': '^2',
+      '@oclif/core': '^1',
+      '@salesforce/command': '^5',
+      '@salesforce/core': '^3',
       tslib: '^2',
     };
     devDependencies = {
       ...devDependencies,
-      '@oclif/dev-cli': '^1',
-      '@oclif/plugin-help': '^3',
-      globby: '^11',
-      '@salesforce/dev-config': '^2',
-      '@salesforce/dev-scripts': '^0',
-      '@salesforce/prettier-config': '^0',
-      '@salesforce/ts-sinon': '^1',
-      '@types/jsforce': '^1.9.29',
+      oclif: '^3',
       '@typescript-eslint/eslint-plugin': '^4',
       '@typescript-eslint/parser': '^4',
       'eslint-config-prettier': '^8',
-      'eslint-config-salesforce': '^0',
-      'eslint-config-salesforce-typescript': '^0',
       'eslint-plugin-header': '^3',
       'eslint-plugin-import': '^2',
       'eslint-plugin-jsdoc': '^35',
       'eslint-plugin-prettier': '^3',
       'eslint-plugin-typescript': '^0',
-      husky: '^4',
       prettier: '^2',
-      'pretty-quick': '^3',
       'ts-node': '^10',
       typescript: '4',
-      mocha: '^8',
+      mocha: '^9',
       nyc: '^15',
       chai: '^4',
       sinon: '10.0.0',
-      '@oclif/test': '^1',
+      '@salesforce/ts-sinon': '^1',
+      '@oclif/test': '^2',
       '@types/chai': '^4',
       '@types/mocha': '^8',
       eslint: '^7',
-      'eslint-config-oclif': '^3.1',
     };
 
     if (isWindows) devDependencies = { ...devDependencies, rimraf: 'latest' };
@@ -345,7 +328,7 @@ class App extends Generator {
 
   public end(): void {
     if (successfullyInstalledDeps) {
-      this.spawnCommandSync(path.join('.', 'node_modules/.bin/oclif-dev'), ['readme']);
+      this.spawnCommandSync(path.join('.', 'node_modules/.bin/oclif'), ['readme']);
     }
 
     // eslint-disable-next-line no-console
@@ -376,7 +359,9 @@ class App extends Generator {
     const cmd = `${bin} ${sfdxExampleCommand}`;
     const opts = { ...this, _, bin, cmd };
     this.fs.copyTpl(this.templatePath('plugin/bin/run'), this.destinationPath('bin/run'), opts);
-    this.fs.copyTpl(this.templatePath('bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts);
+    this.fs.copyTpl(this.templatePath('plugin/bin/run.cmd'), this.destinationPath('bin/run.cmd'), opts);
+    this.fs.copyTpl(this.templatePath('plugin/bin/dev'), this.destinationPath('bin/dev'), opts);
+    this.fs.copyTpl(this.templatePath('plugin/bin/dev.cmd'), this.destinationPath('bin/dev.cmd'), opts);
     this.fs.copyTpl(this.templatePath('sfdxPlugin/README.md.ejs'), this.destinationPath('README.md'), this);
     this.fs.copy(
       this.templatePath('.images/vscodeScreenshot.png'),

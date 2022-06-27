@@ -31,7 +31,6 @@ const expectedPackageJSON = {
         description: 'Commands to say hello.',
       },
     },
-    devPlugins: ['@oclif/plugin-help'],
   },
   repository: 'johndoe/sfdx-plugin-org',
   scripts: {
@@ -39,9 +38,9 @@ const expectedPackageJSON = {
     lint: 'eslint src/**/*.ts test/**/*.ts',
     postpack: `${rmf} oclif.manifest.json`,
     posttest: 'eslint src/**/*.ts test/**/*.ts',
-    prepack: `${rmrf} lib && tsc -b && oclif-dev manifest && oclif-dev readme`,
+    prepack: `${rmrf} lib && tsc -b && oclif manifest && oclif readme`,
     test: 'nyc --extension .ts --require ts-node/register mocha --forbid-only "test/**/*.test.ts"',
-    version: 'oclif-dev readme && git add README.md',
+    version: 'oclif readme && git add README.md',
   },
 };
 

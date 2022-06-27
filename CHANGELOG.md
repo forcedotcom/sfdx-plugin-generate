@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/forcedotcom/sfdx-plugin-generate/compare/v2.0.1...v2.0.2) (2022-06-27)
+
+### Bug Fixes
+
+- **generator:** bump deps, add bin/dev ([99791d5](https://github.com/forcedotcom/sfdx-plugin-generate/commit/99791d516de8a028cb6c8f52c5e353f52c78ec88))
+- remove ref to salesforce eslint config ([dc69cf2](https://github.com/forcedotcom/sfdx-plugin-generate/commit/dc69cf26f74aafa641dc3386b15f5cc2cc1c20ae))
+- remove ref to salesforce tsconfig ([fc7a585](https://github.com/forcedotcom/sfdx-plugin-generate/commit/fc7a585a00e3c1e9dd1e096b71d0ca945d93000b))
+
 ### [2.0.1](https://github.com/forcedotcom/sfdx-plugin-generate/compare/v2.0.0...v2.0.1) (2022-05-12)
 
 ### Bug Fixes

@@ -5729,10 +5729,10 @@ object.values@^1.1.4, object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
-oclif@^2.6.1:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/oclif/-/oclif-2.6.3.tgz#77295d8342a41bfebcf13f7eba260d26ff5d92ef"
-  integrity sha512-t3w1GnDrZ9GnlO2WxdTRIlb5EmfLo7fkcpKo95q+03HoL4GVUNneraVymyUTYEBsvMyWcX8PbVkcMai/HhBydA==
+oclif@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/oclif/-/oclif-2.7.0.tgz#590d866b02f20cff2a21ddfc56e22509c55865f5"
+  integrity sha512-nmgk/emtEth/0RYTMeovj22zpiT4P7KvIDc3OOT8VeAEDvdbnZfg3tV3YRnHK0zrSKETKqpHWFyNx2PLMl0eKQ==
   dependencies:
     "@oclif/core" "^1.6.4"
     "@oclif/plugin-help" "^5.1.11"

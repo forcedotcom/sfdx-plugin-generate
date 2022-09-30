@@ -85,15 +85,6 @@ class App extends Generator {
   private githubUser: string | undefined;
   private answers!: IAnswers;
 
-  // eslint-disable-next-line no-underscore-dangle
-  private get _bin(): string {
-    // eslint-disable-next-line no-mixed-operators
-
-    let bin = (this.pjson.oclif && (this.pjson.oclif.bin || this.pjson.oclif.dirname)) || this.pjson.name;
-    if (bin.includes('/')) bin = bin.split('/').pop();
-    return bin;
-  }
-
   public constructor(args: string | string[], opts: Options) {
     super(args, opts, {
       customInstallTask: true,
@@ -104,6 +95,15 @@ class App extends Generator {
       defaults: opts.defaults as boolean,
       skipInstall: (opts.skipInstall as boolean) || false,
     };
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  private get _bin(): string {
+    // eslint-disable-next-line no-mixed-operators
+
+    let bin = (this.pjson.oclif && (this.pjson.oclif.bin || this.pjson.oclif.dirname)) || this.pjson.name;
+    if (bin.includes('/')) bin = bin.split('/').pop();
+    return bin;
   }
 
   public async prompting(): Promise<void> {
@@ -306,7 +306,7 @@ class App extends Generator {
     this.pjson.devDependencies = devDependencies;
 
     // Merge `this.pjson` and write file
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
     this.packageJson.merge(sortPjson(this.pjson));
   }
 

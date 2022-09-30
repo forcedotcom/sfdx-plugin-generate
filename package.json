@@ -14,7 +14,7 @@
     "sort-pjson": "^1.0.3",
     "tslib": "^2.2.0",
     "yeoman-environment": "^3.9.1",
-    "yeoman-generator": "^5.6.1",
+    "yeoman-generator": "^5.7.0",
     "yosay": "^2.0.2"
   },
   "devDependencies": {
@@ -27,7 +27,7 @@
     "@types/lodash": "^4.14.170",
     "@types/shelljs": "^0.8.11",
     "@types/yeoman-environment": "^2.10.7",
-    "@types/yeoman-generator": "^5.2.10",
+    "@types/yeoman-generator": "^5.2.11",
     "@types/yeoman-test": "^4.0.3",
     "@types/yosay": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",

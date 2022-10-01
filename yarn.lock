@@ -1256,7 +1256,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/inquirer@*", "@types/inquirer@^8":
+"@types/inquirer@^8":
   version "8.2.4"
   resolved "https://registry.yarnpkg.com/@types/inquirer/-/inquirer-8.2.4.tgz#f7f0c76c65870c7bbc80a112c9c77ffcf7f158c1"
   integrity sha512-Pxxx3i3AyK7vKAj3LRM/vF7ETcHKiLJ/u5CnNgbz/eYj/vB3xGAYtRxI5IKtq0hpe5iFHD22BKV3n6WHUu0k4Q==
@@ -1392,13 +1392,13 @@
     "@types/expect" "^1.20.4"
     "@types/node" "*"
 
-"@types/yeoman-environment@*", "@types/yeoman-environment@^2.10.7":
-  version "2.10.7"
-  resolved "https://registry.yarnpkg.com/@types/yeoman-environment/-/yeoman-environment-2.10.7.tgz#3aad1480a2c6a2e6c28b7f2ff1161b98c9d3e60c"
-  integrity sha512-74+PN82IHkOGFAAYOaYNCj428vdQfd+bcP40i6EtC6a+F41YlHTNCx6Rs06MArQTX7uc6qAwcXqufAoIQ2HLiQ==
+"@types/yeoman-environment@*", "@types/yeoman-environment@^2.10.8":
+  version "2.10.8"
+  resolved "https://registry.yarnpkg.com/@types/yeoman-environment/-/yeoman-environment-2.10.8.tgz#f9e9fea143ecd6e3358d759b366fddf869aa4e7a"
+  integrity sha512-/g92Z/PAMXklSoWafGxTW8DxB4admgl5NDHvKn0qMkz2C0GJUvbV7tpU9LbKNnlMO+ynerz5bCVbhuBzEHbb6Q==
   dependencies:
     "@types/diff" "*"
-    "@types/inquirer" "*"
+    "@types/inquirer" "^8"
     "@types/mem-fs" "*"
     "@types/text-table" "*"
     "@types/vinyl" "*"

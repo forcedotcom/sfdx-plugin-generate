@@ -7,7 +7,7 @@
   "bugs": "https://github.com/forcedotcom/sfdx-plugin-generate/issues",
   "dependencies": {
     "@oclif/core": "^1.16.4",
-    "@salesforce/ts-types": "^1.5.17",
+    "@salesforce/ts-types": "^1.5.21",
     "debug": "^4.3.1",
     "lodash": "^4.17.21",
     "rimraf": "^3.0.2",

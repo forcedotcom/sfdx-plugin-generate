@@ -9,6 +9,7 @@ import { Command } from '@oclif/core';
 import { createEnv } from 'yeoman-environment';
 
 export default abstract class CommandBase extends Command {
+  // eslint-disable-next-line class-methods-use-this
   protected async generate(type: string, generatorOptions = {}): Promise<void> {
     const env = createEnv();
 

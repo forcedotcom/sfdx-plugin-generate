@@ -31,7 +31,7 @@
     "@types/yeoman-test": "^4.0.3",
     "@types/yosay": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
-    "@typescript-eslint/parser": "^5.41.0",
+    "@typescript-eslint/parser": "^5.43.0",
     "chai": "^4.3.4",
     "eslint": "^8.27.0",
     "eslint-config-oclif": "^4",

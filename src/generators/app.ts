@@ -130,11 +130,11 @@ class App extends Generator {
         node: '>=14.0.0',
       },
       scripts: {
-        posttest: 'eslint src/**/*.ts test/**/*.ts',
+        posttest: 'eslint "src/**/*.ts" "test/**/*.ts"',
         test: 'nyc --extension .ts --require ts-node/register mocha --forbid-only "test/**/*.test.ts"',
         prepack: `${rmrf} lib && tsc -b && oclif manifest && oclif readme`,
         build: 'tsc -p .',
-        lint: 'eslint src/**/*.ts test/**/*.ts',
+        lint: 'eslint "src/**/*.ts" "test/**/*.ts"',
         postpack: `${rmf} oclif.manifest.json`,
         version: 'oclif readme && git add README.md',
       },

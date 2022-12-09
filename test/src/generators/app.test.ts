@@ -35,9 +35,9 @@ const expectedPackageJSON = {
   repository: 'johndoe/sfdx-plugin-org',
   scripts: {
     build: 'tsc -p .',
-    lint: 'eslint src/**/*.ts test/**/*.ts',
+    lint: 'eslint "src/**/*.ts" "test/**/*.ts"',
     postpack: `${rmf} oclif.manifest.json`,
-    posttest: 'eslint src/**/*.ts test/**/*.ts',
+    posttest: 'eslint "src/**/*.ts" "test/**/*.ts"',
     prepack: `${rmrf} lib && tsc -b && oclif manifest && oclif readme`,
     test: 'nyc --extension .ts --require ts-node/register mocha --forbid-only "test/**/*.test.ts"',
     version: 'oclif readme && git add README.md',

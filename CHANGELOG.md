@@ -1,3 +1,12 @@
+## [2.0.14](https://github.com/forcedotcom/sfdx-plugin-generate/compare/2.0.13...2.0.14) (2023-01-06)
+
+
+### Bug Fixes
+
+* deprecate plugin ([#197](https://github.com/forcedotcom/sfdx-plugin-generate/issues/197)) ([5e277f2](https://github.com/forcedotcom/sfdx-plugin-generate/commit/5e277f25cc0ecc98e9b4d8cf05bec4dacdf884b2))
+
+
+
 ## [2.0.13](https://github.com/forcedotcom/sfdx-plugin-generate/compare/2.0.12...2.0.13) (2022-12-11)
 
 

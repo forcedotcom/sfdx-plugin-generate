@@ -1,3 +1,16 @@
+## [2.0.16](https://github.com/forcedotcom/sfdx-plugin-generate/compare/2.0.15...2.0.16) (2023-01-15)
+
+
+### Bug Fixes
+
+* **deps:** bump @salesforce/ts-types from 1.7.1 to 1.7.2 ([aa5e53e](https://github.com/forcedotcom/sfdx-plugin-generate/commit/aa5e53ea8fb8e5a04d60780fc9247d6711d16068))
+
+
+
+## [2.0.15](https://github.com/forcedotcom/sfdx-plugin-generate/compare/2.0.14...2.0.15) (2023-01-06)
+
+
+
 ## [2.0.14](https://github.com/forcedotcom/sfdx-plugin-generate/compare/2.0.13...2.0.14) (2023-01-06)
 
 

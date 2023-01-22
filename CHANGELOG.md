@@ -1,3 +1,12 @@
+## [2.0.17](https://github.com/forcedotcom/sfdx-plugin-generate/compare/2.0.16...2.0.17) (2023-01-22)
+
+
+### Bug Fixes
+
+* **deps:** bump @oclif/core from 1.23.1 to 1.25.0 ([132e8b1](https://github.com/forcedotcom/sfdx-plugin-generate/commit/132e8b1a3c86bc37af4bb972d90bd833a1da81d9))
+
+
+
 ## [2.0.16](https://github.com/forcedotcom/sfdx-plugin-generate/compare/2.0.15...2.0.16) (2023-01-15)
 
 

@@ -41,7 +41,7 @@
     "eslint-config-salesforce-license": "^0.2.0",
     "eslint-config-salesforce-typescript": "^1.1.1",
     "eslint-plugin-header": "^3.0.0",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsdoc": "^39.6.4",
     "globby": "^11.0.3",
     "husky": "^7.0.4",
